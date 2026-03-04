@@ -29,8 +29,8 @@ const rail = ref(false)
     <v-divider />
 
     <v-list density="compact" nav>
-      <v-list-item prepend-icon="mdi-home-city" title="Home" value="home" />
-      <v-list-item prepend-icon="mdi-account" title="My Account" value="account" />
+      <v-list-item prepend-icon="mdi-home-city" title="Home" value="home" to="/user"/>
+      <v-list-item prepend-icon="mdi-account" title="My Account" value="account" to="/room" />
       <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users" />
     </v-list>
   </v-navigation-drawer>
