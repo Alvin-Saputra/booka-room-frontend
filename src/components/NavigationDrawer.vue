@@ -28,10 +28,22 @@ const rail = ref(false)
 
     <v-divider />
 
-    <v-list density="compact" nav>
-      <v-list-item prepend-icon="mdi-home-city" title="Home" value="home" to="/user"/>
-      <v-list-item prepend-icon="mdi-account" title="My Account" value="account" to="/room" />
-      <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users" />
+    <v-list
+      density="compact"
+      nav
+    >
+      <v-list-item
+        prepend-icon="mdi-account-group-outline"
+        title="Users"
+        value="users"
+        to="/user"
+      />
+      <v-list-item
+        prepend-icon="mdi mdi-sofa-outline"
+        title="Home"
+        value="Room"
+        to="/room"
+      />
     </v-list>
   </v-navigation-drawer>
 </template>

@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
-import { getUsers } from '@/service/user-service';
+import { getUsers, updateUser } from '@/service/user-service';
+import { deleteUser } from '@/service/user-service';
+import { createUser } from '@/service/user-service';
 import { ref } from 'vue';
 
 export const useUserStore = defineStore('user', () => {
@@ -7,32 +9,117 @@ export const useUserStore = defineStore('user', () => {
   const userData = ref([]);
   const isLoading = ref(false);
   const error = ref(null);
+  const message = ref(null);
 
   // Actions (Setara dengan methods)
   const fetchUsers = async () => {
     isLoading.value = true;
     error.value = null;
     try {
-      const users = await getUsers();
-      userData.value = users;
+      const response = await getUsers(); // Perbaikan: ubah 'users' jadi 'response'
+      userData.value = response;
+
+      if (response.status === 'success') {
+        message.value = "Data User Berhasil diambil.";
+        return true;
+      } else {
+        message.value = "Data User Gagal diambil.";
+        return false;
+      }
     } catch (err) {
       console.error('Error fetching users:', err);
       error.value = err;
+      message.value = "Terjadi kesalahan pada server.";
+      return false;
     } finally {
       isLoading.value = false;
     }
   };
 
-  const deleteUser = (userId) => {
-    try {
-      isLoading.value = true;
-      error.value = null;
-      const isSuccess = deleteUser
-    } catch (err) {
 
+  const removeUser = async (userId) => {
+    try {
+
+      error.value = null;
+      const response = await deleteUser(userId);
+
+      if (response.status === 'success') {
+
+        if (userData.value && userData.value.data) {
+          userData.value.data = userData.value.data.filter(user => user.id !== userId);
+        }
+        message.value = "Data User Berhasil di Hapus";
+        return true;
+
+      }
+      else {
+        message.value = "Data User Gagal di Hapus";
+        return false;
+      }
+
+    } catch (err) {
+      console.error('Error deleting user:', err);
+      error.value = err;
+      message.value = "Gagal Mengahapus Data User";
+      return false;
+    }
+
+  }
+
+
+  const addUser = async (userName, email, role) => {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      const response = await createUser(userName, email, role);
+
+      if (response.status === 'success') {
+        console.log("ini adalah" + response.status)
+        fetchUsers();
+        message.value = 'Data User Berhasil di Tambahkan';
+        return true;
+      }
+      else {
+        message.value = 'Data User Gagal di Tambahkan';
+        return false;
+      }
+
+    } catch (err) {
+      console.error('Error adding user:', err);
+      error.value = err;
+      return false;
+    } finally {
+      isLoading.value = false;
+      // return false;
+    }
+  }
+
+  const editUser = async (userId, userName, email, role) => {
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+      const response = await updateUser(userId, userName, email, role);
+
+      if (response.status === 'success') {
+        fetchUsers();
+        message.value = "Berhasil Mengubah Data User";
+        isLoading.value = false;
+      }
+      else {
+        message.value = "Gagal Mengubah Data User";
+        isLoading.value = false;
+      }
+    } catch (err) {
+      console.error('Error adding user:', err);
+      error.value = err;
+      return false;
+    }
+    finally {
+      isLoading.value = false;
     }
   }
 
   // Kembalikan state dan action yang ingin diakses dari luar
-  return { userData, isLoading, error, fetchUsers };
+  return { userData, isLoading, error, message, fetchUsers, removeUser, addUser, editUser };
 });
