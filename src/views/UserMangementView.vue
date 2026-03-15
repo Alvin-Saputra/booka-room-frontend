@@ -10,7 +10,7 @@ import Alert from '@/components/Alert.vue';
 
 
 const userStore = useUserStore();
-const { userData, isLoading } = storeToRefs(userStore);
+const { userData, isLoading, message } = storeToRefs(userStore);
 
 onMounted(() => {
   userStore.fetchUsers();
@@ -19,9 +19,9 @@ onMounted(() => {
 const showDeleteDialog = ref(false);
 const showAddUserDialog = ref(false);
 const showEditUserDialog = ref(false);
-const selectedUserId = ref(null);
+// const selectedUserId = ref(null);
 const selectedUser = reactive({
-
+  id: null,
   name: '',
   email: '',
   role: ''
@@ -34,8 +34,8 @@ const alertConfig = reactive({
   message: ''
 });
 
-const openDeleteDialog = (userId) => {
-  selectedUserId.value = userId;
+const openDeleteDialog = (user) => {
+  selectedUser.id = user.id; // Simpan id ke selectedUser
   showDeleteDialog.value = true;
 };
 
@@ -44,7 +44,7 @@ const openAddUserDialog = () => {
 };
 
 const openEditUserDialog = (user) => {
-  selectedUserId.value = user.id;
+  selectedUser.id = user.id;
   selectedUser.name = user.user_name;
   selectedUser.email = user.email;
   selectedUser.role = user.role;
@@ -55,11 +55,11 @@ const openEditUserDialog = (user) => {
 const handleAddUser = async (name, email, role) => {
   const isSuccess = await userStore.addUser(name, email, role);
   if (isSuccess) {
-    triggerAlert('success', 'Success', 'User added successfully');
+    triggerAlert('success', 'Success', message);
     showAddUserDialog.value = false;
   }
   else {
-    triggerAlert('error', 'Error', 'Failed to add user');
+    triggerAlert('error', 'Error', message);
     showAddUserDialog.value = false;
   }
 
@@ -67,14 +67,42 @@ const handleAddUser = async (name, email, role) => {
 
 
 const handleDeleteUser = async () => {
-  if (!selectedUserId.value) return;
+  if (!selectedUser.id) return;
 
-  await userStore.removeUser(selectedUserId.value);
-  showDeleteDialog.value = false;
+  const isSuccess = await userStore.removeUser(selectedUser.id);
+
+  if (isSuccess) {
+    triggerAlert('success', 'Success', message);
+    showDeleteDialog.value = false;
+    selectedUser.id = null;
+  }
+  else {
+    triggerAlert('error', 'Error', message);
+    showDeleteDialog.value = false;
+    selectedUser.id = null;
+  }
+
 };
 
 const handleEditUser = async (name, email, role) => {
-  await userStore.editUser(selectedUserId.value, name, email, role);
+  const isSuccess = await userStore.editUser(selectedUser.id, name, email, role);
+
+  if (isSuccess) {
+    triggerAlert('success', 'Success', message);
+    showEditUserDialog.value = false;
+    selectedUser.id = null;
+    selectedUser.name = '';
+    selectedUser.email = '';
+    selectedUser.role = '';
+  }
+  else {
+    triggerAlert('error', 'Error', message);
+    showEditUserDialog.value = false;
+    selectedUser.id = null;
+    selectedUser.name = '';
+    selectedUser.email = '';
+    selectedUser.role = '';
+  }
 }
 
 const triggerAlert = (type, title, msg) => {
@@ -94,36 +122,18 @@ const triggerAlert = (type, title, msg) => {
           User Management
         </h1>
       </div>
-      <v-btn
-        color="primary"
-        prepend-icon="mdi-plus"
-        rounded
-        flat
-        @click="openAddUserDialog"
-      >
+      <v-btn color="primary" prepend-icon="mdi-plus" rounded flat @click="openAddUserDialog">
         Add User
       </v-btn>
     </div>
 
-    <v-skeleton-loader
-      v-if="isLoading"
-      type="table"
-    />
+    <v-skeleton-loader v-if="isLoading" type="table" />
 
-    <v-alert
-      v-else-if="!userData?.data || userData.data.length === 0"
-      type="info"
-      variant="tonal"
-    >
+    <v-alert v-else-if="!userData || userData.length === 0" type="info" variant="tonal">
       Belum ada data user.
     </v-alert>
 
-    <v-card
-      v-else
-      elevation="2px"
-      rounded="xl"
-      class="p-4"
-    >
+    <v-card v-else elevation="2px" rounded="xl" class="p-4">
       <v-table striped="even">
         <thead>
           <tr>
@@ -155,32 +165,17 @@ const triggerAlert = (type, title, msg) => {
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="item in userData.data"
-            :key="item.id"
-          >
+          <tr v-for="item in userData" :key="item.id">
             <td>{{ item.user_code }}</td>
             <td>{{ item.user_name }}</td>
             <td>{{ item.email }}</td>
             <td>{{ item.role }}</td>
             <td>
               <div class="flex justify-center gap-3">
-                <v-btn
-                  prepend-icon="$edit"
-                  color="primary"
-                  rounded
-                  flat
-                  @click="openEditUserDialog(item)"
-                >
+                <v-btn prepend-icon="$edit" color="primary" rounded flat @click="openEditUserDialog(item)">
                   Edit
                 </v-btn>
-                <v-btn
-                  prepend-icon="$delete"
-                  color="red"
-                  rounded
-                  flat
-                  @click="openDeleteDialog(item.id)"
-                >
+                <v-btn prepend-icon="$delete" color="red" rounded flat @click="openDeleteDialog(item)">
                   Delete
                 </v-btn>
               </div>
@@ -191,25 +186,12 @@ const triggerAlert = (type, title, msg) => {
     </v-card>
   </div>
 
-  <ConfirmationDialog
-    v-model="showDeleteDialog"
-    :on-custom-click="handleDeleteUser"
-  />
-  <AddUserDialog
-    v-model="showAddUserDialog"
-    :on-custom-click="handleAddUser"
-  />
-  <EditUserDialog
-    v-model="showEditUserDialog"
-    :on-custom-click="handleEditUser"
-    :user="selectedUser"
-  />
-  <Alert
-    v-model="alertConfig.show"
-    :type="alertConfig.type"
-    :title="alertConfig.title"
-    :message="alertConfig.message"
-  />
+  <ConfirmationDialog v-model="showDeleteDialog" :on-custom-click="handleDeleteUser"
+    :message="'Apakah anda yakin ingin menghapus usser ini?'" />
+  <AddUserDialog v-model="showAddUserDialog" :on-custom-click="handleAddUser" />
+  <EditUserDialog v-model="showEditUserDialog" :on-custom-click="handleEditUser" :user="selectedUser" />
+  <Alert v-model="alertConfig.show" :type="alertConfig.type" :title="alertConfig.title"
+    :message="alertConfig.message" />
 </template>
 
 

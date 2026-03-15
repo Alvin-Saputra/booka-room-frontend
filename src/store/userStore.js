@@ -17,7 +17,7 @@ export const useUserStore = defineStore('user', () => {
     error.value = null;
     try {
       const response = await getUsers(); // Perbaikan: ubah 'users' jadi 'response'
-      userData.value = response;
+      userData.value = response.data;
 
       if (response.status === 'success') {
         message.value = "Data User Berhasil diambil.";
@@ -39,21 +39,23 @@ export const useUserStore = defineStore('user', () => {
 
   const removeUser = async (userId) => {
     try {
-
+      isLoading.value= true;
       error.value = null;
       const response = await deleteUser(userId);
 
       if (response.status === 'success') {
 
-        if (userData.value && userData.value.data) {
-          userData.value.data = userData.value.data.filter(user => user.id !== userId);
-        }
+       if (userData.value) {
+        userData.value = userData.value.filter(user => user.id !== userId);
+      }
         message.value = "Data User Berhasil di Hapus";
+        isLoading.value = false;
         return true;
 
       }
       else {
         message.value = "Data User Gagal di Hapus";
+        isLoading.value = false;
         return false;
       }
 
@@ -75,7 +77,7 @@ export const useUserStore = defineStore('user', () => {
 
       if (response.status === 'success') {
         console.log("ini adalah" + response.status)
-        fetchUsers();
+        await fetchUsers();
         message.value = 'Data User Berhasil di Tambahkan';
         return true;
       }
@@ -102,13 +104,15 @@ export const useUserStore = defineStore('user', () => {
       const response = await updateUser(userId, userName, email, role);
 
       if (response.status === 'success') {
-        fetchUsers();
+        await fetchUsers();
         message.value = "Berhasil Mengubah Data User";
-        isLoading.value = false;
+        isLoading.value = true;
+        return true;
       }
       else {
         message.value = "Gagal Mengubah Data User";
         isLoading.value = false;
+        return false;
       }
     } catch (err) {
       console.error('Error adding user:', err);
