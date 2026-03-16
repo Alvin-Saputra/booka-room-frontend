@@ -8,6 +8,8 @@ import ConfirmationDialog from '@/components/ConfirmationDialog.vue';
 import Alert from '@/components/Alert.vue';
 import { ref, reactive } from 'vue';
 import EditRoomDialog from '@/components/EditRoomDialog.vue';
+
+
 const roomStore = useRoomStore();
 
 const { roomData, isLoading, message } = storeToRefs(roomStore);

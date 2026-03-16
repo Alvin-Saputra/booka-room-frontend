@@ -1,13 +1,19 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import NavigationDrawer from '@/components/NavigationDrawer.vue'
+import { useAuthStore } from './store/authStore';
+import { storeToRefs } from 'pinia'
+
+const authStore = useAuthStore();
+const { isAuthenticated } = storeToRefs(authStore);
+
 
 </script>
 
 <template>
   <v-app>
     <v-layout>
-      <NavigationDrawer />
+      <NavigationDrawer v-if="isAuthenticated" />
 
       <v-main>
         <RouterView />

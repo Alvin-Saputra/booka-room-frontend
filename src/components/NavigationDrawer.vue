@@ -2,6 +2,15 @@
 import { ref } from 'vue'
 const drawer = ref(true);
 const rail = ref(false);
+
+import { useAuthStore } from '@/store/authStore';
+
+const authStore = useAuthStore();
+
+const handleLogout = async () => {
+  await authStore.logout();
+};
+
 </script>
 
 
@@ -62,6 +71,19 @@ const rail = ref(false);
     <v-list nav density="comfortable" class="px-2 py-3">
 
       <v-list-item
+        to="/dashboard"
+        class="rounded-xl mb-1 hover:bg-gray-100 transition"
+      >
+        <template #prepend>
+          <v-icon class="text-gray-600">mdi mdi-tablet-dashboard</v-icon>
+        </template>
+
+        <v-list-item-title class="font-medium">
+          Dashbord
+        </v-list-item-title>
+      </v-list-item>
+
+      <v-list-item
         to="/user"
         class="rounded-xl mb-1 hover:bg-gray-100 transition"
       >
@@ -87,7 +109,28 @@ const rail = ref(false);
         </v-list-item-title>
       </v-list-item>
 
+      <v-list-item
+        to="/booking"
+        class="rounded-xl hover:bg-gray-100 transition"
+      >
+        <template #prepend>
+          <v-icon class="text-gray-600">mdi mdi-book-plus-multiple-outline</v-icon>
+        </template>
+
+        <v-list-item-title class="font-medium">
+          Booking
+        </v-list-item-title>
+      </v-list-item>
+
     </v-list>
+
+       <template v-slot:append>
+          <div class="pa-2">
+            <v-btn block v-show="!rail" @click="handleLogout" rounded="xl" class="bg-red-500" >
+              <p class="text-white">Logout</p>
+            </v-btn>
+          </div>
+        </template>
 
   </v-navigation-drawer>
 </template>
