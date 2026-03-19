@@ -41,7 +41,7 @@ export const useAuthStore = defineStore("auth", () => {
 
             }
         } catch (error) {
-            console.error('Error saat login:', err);
+            console.error('Error saat login:', error);
             error.value = err.response?.data?.message || 'Gagal login';
             message.value = "Gagal Login";
             return false;

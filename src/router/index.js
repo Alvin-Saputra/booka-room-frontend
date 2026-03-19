@@ -6,6 +6,7 @@ import LoginView from '@/views/LoginView.vue' // Pastikan Anda membuat file ini
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/store/authStore'
 import BookingManagementView from '@/views/BookingManagementView.vue'
+import AddBookingView from '@/views/AddBookingView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +46,13 @@ const router = createRouter({
       path: '/booking',
       name: 'booking',
       component: BookingManagementView,
+      meta: { requiresAuth: true } // Menandakan butuh login
+    },
+
+     {
+      path: '/add-booking',
+      name: 'Addbooking',
+      component: AddBookingView,
       meta: { requiresAuth: true } // Menandakan butuh login
     },
   ],
