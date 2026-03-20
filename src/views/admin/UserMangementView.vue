@@ -3,10 +3,10 @@ import { onMounted, ref } from 'vue';
 import { reactive } from 'vue';
 import { useUserStore } from '@/store/userStore';
 import { storeToRefs } from 'pinia';
-import ConfirmationDialog from '@/components/ConfirmationDialog.vue';
-import AddUserDialog from '../components/AddUserDialog.vue';
-import EditUserDialog from '../components/EditUserDialog.vue';
-import Alert from '@/components/Alert.vue';
+import ConfirmationDialog from '@/components/common/ConfirmationDialog.vue';
+import AddUserDialog from '@/components/admin/AddUserDialog.vue';
+import EditUserDialog from '@/components/admin/EditUserDialog.vue';
+import Alert from '@/components/common/Alert.vue';
 
 
 const userStore = useUserStore();

@@ -1,12 +1,16 @@
 // src/router/index.js
-import RoomManagementView from '@/views/RoomManagementView.vue'
-import UserMangementView from '@/views/UserMangementView.vue'
-import DashboardView from '@/views/DashboardView.vue'
-import LoginView from '@/views/LoginView.vue' // Pastikan Anda membuat file ini
+import RoomManagementView from '@/views/admin/RoomManagementView.vue'
+import UserMangementView from '@/views/admin/UserMangementView.vue'
+import DashboardView from '@/views/admin/DashboardView.vue'
+import LoginView from '@/views/auth/LoginView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/store/authStore'
-import BookingManagementView from '@/views/BookingManagementView.vue'
-import AddBookingView from '@/views/AddBookingView.vue'
+import BookingManagementView from '@/views/admin/BookingManagementView.vue'
+import AddBookingView from '@/views/admin/AddBookingView.vue'
+import AdminLayout from '@/layout/AdminLayout.vue'
+import UserLayout from '@/layout/UserLayout.vue'
+import UserBookingView from '@/views/user/UserBookingView.vue'
+import UserRoomView from '@/views/user/UserRoomView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,42 +22,61 @@ const router = createRouter({
       meta: { requiresGuest: true }
     },
 
-    {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: DashboardView,
-      meta: { requiresAuth: true }
-    },
+
 
     {
-      path: '/',
-      redirect: '/dashboard'
+      path: '/admin',
+      component: AdminLayout,
+      meta: { requiresAuth: true }, // Proteksi diterapkan ke semua rute di dalam children
+      children: [
+        {
+          path: '',
+          redirect: '/dashboard' // Jika akses '/', langsung lempar ke dashboard
+        },
+        {
+          path: 'dashboard',
+          name: 'dashboard',
+          component: DashboardView,
+        },
+        {
+          path: 'room',
+          name: 'room',
+          component: RoomManagementView,
+        },
+        {
+          path: 'user',
+          name: 'user',
+          component: UserMangementView,
+        },
+        {
+          path: 'booking',
+          name: 'booking',
+          component: BookingManagementView,
+        },
+        {
+          path: '/add-booking',
+          name: 'add-booking',
+          component: AddBookingView, // Halaman Login Anda
+        },
+      ]
     },
-
     {
       path: '/user',
-      name: 'user',
-      component: UserMangementView,
-      meta: { requiresAuth: true } // Menandakan butuh login
-    },
-    {
-      path: '/room',
-      name: 'room',
-      component: RoomManagementView,
-      meta: { requiresAuth: true } // Menandakan butuh login
-    },
-    {
-      path: '/booking',
-      name: 'booking',
-      component: BookingManagementView,
-      meta: { requiresAuth: true } // Menandakan butuh login
-    },
+      component: UserLayout,
+      meta: { requiresAuth: true },
+      children: [
+         {
+          path: 'room',
+          name: 'room',
+          component: UserRoomView,
+        },
+        {
+          path: 'booking',
+          name: 'booking',
+          component: UserBookingView
+        },
+      ]
 
-     {
-      path: '/add-booking',
-      name: 'Addbooking',
-      component: AddBookingView,
-      meta: { requiresAuth: true } // Menandakan butuh login
     },
   ],
 })

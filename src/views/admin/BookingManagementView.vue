@@ -3,8 +3,8 @@ import { useBookingStore } from '@/store/bookingStore';
 import { onMounted, ref } from 'vue';
 import { reactive } from 'vue';
 import { storeToRefs } from 'pinia';
-import Alert from '@/components/Alert.vue';
-import ConfirmationDialog from '@/components/ConfirmationDialog.vue';
+import Alert from '@/components/common/Alert.vue';
+import ConfirmationDialog from '@/components/common/ConfirmationDialog.vue';
 
 const bookingStore = useBookingStore();
 const { bookingData, isLoading, message } = storeToRefs(bookingStore);

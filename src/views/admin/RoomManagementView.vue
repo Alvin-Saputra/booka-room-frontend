@@ -2,12 +2,12 @@
 import { onMounted } from 'vue';
 import { useRoomStore } from '@/store/roomStore'; // Import store
 import { storeToRefs } from 'pinia'
-import RoomCard from '@/components/RoomCard.vue';
-import AddRoomDialog from '@/components/AddRoomDialog.vue';
-import ConfirmationDialog from '@/components/ConfirmationDialog.vue';
-import Alert from '@/components/Alert.vue';
+import RoomCard from '@/components/admin/RoomCard.vue';
+import AddRoomDialog from '@/components/admin/AddRoomDialog.vue';
+import ConfirmationDialog from '@/components/common/ConfirmationDialog.vue';
+import Alert from '@/components/common/Alert.vue';
 import { ref, reactive } from 'vue';
-import EditRoomDialog from '@/components/EditRoomDialog.vue';
+import EditRoomDialog from '@/components/admin/EditRoomDialog.vue';
 
 
 const roomStore = useRoomStore();

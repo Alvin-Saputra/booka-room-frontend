@@ -1,5 +1,5 @@
 <script setup>
-import DatePicker from '../DatePicker.vue';
+import DatePicker from '../common/DatePicker.vue';
 </script>
 
 <template>

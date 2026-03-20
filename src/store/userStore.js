@@ -73,7 +73,7 @@ export const useUserStore = defineStore('user', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      const response = await createUser(userName, email, role);
+      const response = await createUser(userName, email, role.toLowerCase());
 
       if (response.status === 'success') {
         console.log("ini adalah" + response.status)

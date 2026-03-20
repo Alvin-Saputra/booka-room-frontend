@@ -32,7 +32,7 @@ export const useAuthStore = defineStore("auth", () => {
                     role: response.data.role
                 }));
 
-                router.push('/');
+                router.push('/admin');
                 message.value = "Berhasil Login"
                 return true;
 

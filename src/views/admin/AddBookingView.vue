@@ -2,10 +2,10 @@
 import { ref, onMounted, reactive } from 'vue';
 import { useRoomStore } from '@/store/roomStore';
 import { storeToRefs } from 'pinia';
-import DatePicker from '@/components/DatePicker.vue';
-import TimePicker from '@/components/TimePicker.vue';
+import DatePicker from '@/components/common/DatePicker.vue';
+import TimePicker from '@/components/common/TimePicker.vue';
 import { useBookingStore } from '@/store/bookingStore';
-import Alert from '@/components/Alert.vue';
+import Alert from '@/components/common/Alert.vue';
 
 const roomStore = useRoomStore();
 const { roomData, isLoading} = storeToRefs(roomStore);

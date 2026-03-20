@@ -1,5 +1,5 @@
 <script setup>
-import RoomCard from '../RoomCard.vue';
+import RoomCard from '../admin/RoomCard.vue';
 </script>
 
 <template>
