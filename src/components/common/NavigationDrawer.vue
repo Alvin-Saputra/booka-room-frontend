@@ -84,7 +84,7 @@ const handleLogout = async () => {
       </v-list-item>
 
       <v-list-item
-        to="/user"
+        to="/admin/user"
         class="rounded-xl mb-1 hover:bg-gray-100 transition"
       >
         <template #prepend>
@@ -97,7 +97,7 @@ const handleLogout = async () => {
       </v-list-item>
 
       <v-list-item
-        to="/room"
+        to="/admin/room"
         class="rounded-xl hover:bg-gray-100 transition"
       >
         <template #prepend>
@@ -110,7 +110,7 @@ const handleLogout = async () => {
       </v-list-item>
 
       <v-list-item
-        to="/booking"
+        to="/admin/booking"
         class="rounded-xl hover:bg-gray-100 transition"
       >
         <template #prepend>

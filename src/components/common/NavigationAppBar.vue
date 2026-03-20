@@ -24,8 +24,8 @@ const handleLogout = () => {
         <v-spacer></v-spacer>
 
         <div class="hidden sm:flex gap-2 mr-4">
-            <v-btn to="/user-area/rooms" variant="text" rounded>Cari Ruangan</v-btn>
-            <v-btn to="/user-area/my-bookings" variant="text" rounded>Booking Saya</v-btn>
+            <v-btn to="/user/room" variant="text" rounded>Cari Ruangan</v-btn>
+            <v-btn to="/user/booking-history" variant="text" rounded>Booking Saya</v-btn>
         </div>
 
         <v-btn color="red" variant="tonal" rounded @click="handleLogout">

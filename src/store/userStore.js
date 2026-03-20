@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import { getUsers, updateUser } from '@/service/user-service';
-import { deleteUser } from '@/service/user-service';
-import { createUser } from '@/service/user-service';
+import { getUsers, updateUser } from '@/service/userService';
+import { deleteUser } from '@/service/userService';
+import { createUser } from '@/service/userService';
 import { ref } from 'vue';
 
 export const useUserStore = defineStore('user', () => {

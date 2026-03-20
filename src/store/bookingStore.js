@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { createBooking } from "@/service/booking-service";
+import { createBooking } from "@/service/bookingService";
 import { useAuthStore } from "./authStore";
-import { getBookings } from "@/service/booking-service";
-import { deleteBooking } from "@/service/booking-service";
-import { bookingApproval } from "@/service/booking-service";
+import { getBookings } from "@/service/bookingService";
+import { deleteBooking } from "@/service/bookingService";
+import { bookingApproval } from "@/service/bookingService";
 
 
 export const useBookingStore = defineStore("booking", () => {

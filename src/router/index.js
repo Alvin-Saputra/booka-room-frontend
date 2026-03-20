@@ -1,16 +1,16 @@
 // src/router/index.js
 import RoomManagementView from '@/views/admin/RoomManagementView.vue'
-import UserMangementView from '@/views/admin/UserMangementView.vue'
+import UserManagementView from '@/views/admin/UserManagementView.vue'
 import DashboardView from '@/views/admin/DashboardView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/store/authStore'
 import BookingManagementView from '@/views/admin/BookingManagementView.vue'
-import AddBookingView from '@/views/admin/AddBookingView.vue'
+import BookingCreateView from '@/views/admin/BookingCreateView.vue'
 import AdminLayout from '@/layout/AdminLayout.vue'
 import UserLayout from '@/layout/UserLayout.vue'
-import UserBookingView from '@/views/user/UserBookingView.vue'
-import UserRoomView from '@/views/user/UserRoomView.vue'
+import RoomCatalogView from '@/views/user/RoomCatalogView.vue'
+import BookingHistoryView from '@/views/user/BookingHistoryView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,7 +46,7 @@ const router = createRouter({
         {
           path: 'user',
           name: 'user',
-          component: UserMangementView,
+          component: UserManagementView,
         },
         {
           path: 'booking',
@@ -56,7 +56,7 @@ const router = createRouter({
         {
           path: '/add-booking',
           name: 'add-booking',
-          component: AddBookingView, // Halaman Login Anda
+          component: BookingCreateView, // Halaman Login Anda
         },
       ]
     },
@@ -68,12 +68,12 @@ const router = createRouter({
          {
           path: 'room',
           name: 'room',
-          component: UserRoomView,
+          component: RoomCatalogView,
         },
         {
-          path: 'booking',
-          name: 'booking',
-          component: UserBookingView
+          path: 'booking-history',
+          name: 'booking-history',
+          component: BookingHistoryView
         },
       ]
 

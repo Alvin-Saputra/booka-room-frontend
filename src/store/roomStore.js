@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { createRoom, getRooms, deleteRoom, editRoom } from '@/service/room-service';
+import { createRoom, getRooms, deleteRoom, editRoom } from '@/service/roomService';
 import { ref } from 'vue';
 
 export const useRoomStore = defineStore('room', () => {
