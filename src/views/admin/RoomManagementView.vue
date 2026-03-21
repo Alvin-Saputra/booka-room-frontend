@@ -2,7 +2,7 @@
 import { onMounted } from 'vue';
 import { useRoomStore } from '@/store/roomStore'; // Import store
 import { storeToRefs } from 'pinia'
-import RoomCard from '@/components/admin/RoomCard.vue';
+import RoomCard from '@/components/common/RoomCard.vue';
 import AddRoomDialog from '@/components/admin/AddRoomDialog.vue';
 import ConfirmationDialog from '@/components/common/ConfirmationDialog.vue';
 import Alert from '@/components/common/Alert.vue';
@@ -66,7 +66,7 @@ const handleAddRoom = async (roomName, capacity) => {
   const isSuccess = await roomStore.addRoom(roomName, capacity);
   if (isSuccess) {
     triggerAlert('success', 'Success', message);
-    showAddRoomDialog.value = false;  
+    showAddRoomDialog.value = false;
   }
   else {
     triggerAlert('error', 'Error', message);
@@ -131,7 +131,16 @@ const handleEditRoom = async (roomName, capacity) => {
 
     <v-row v-else>
       <v-col v-for="item in roomData" :key="item.id" cols="12">
-        <RoomCard :room="item" @request-delete="openDeleteRoomDialog" @request-update="openEditRoomDialog"/>
+        <RoomCard :room="item" ">
+          <template #actions>
+          <v-btn color=" error" variant="text" @click="openDeleteRoomDialog(item)">
+          Hapus
+          </v-btn>
+          <v-btn color="primary" variant="flat" @click="openEditRoomDialog(item)">
+            Edit
+          </v-btn>
+          </template>
+        </RoomCard>
       </v-col>
     </v-row>
     <AddRoomDialog v-model="showAddRoomDialog" :on-custom-click="handleAddRoom" />

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { createBooking } from "@/service/bookingService";
+import { createBooking, getBookingsByUserId } from "@/service/bookingService";
 import { useAuthStore } from "./authStore";
 import { getBookings } from "@/service/bookingService";
 import { deleteBooking } from "@/service/bookingService";
@@ -57,10 +57,10 @@ export const useBookingStore = defineStore("booking", () => {
             bookingData.value = response.data;
 
             if (response.status === 'success') {
-                message.value = "Data User Berhasil diambil.";
+                message.value = "Data Booking Berhasil diambil.";
                 return true;
             } else {
-                message.value = "Data User Gagal diambil.";
+                message.value = "Data Booking Gagal diambil.";
                 return false;
             }
 
@@ -133,7 +133,36 @@ export const useBookingStore = defineStore("booking", () => {
 
     }
 
-    return { bookingData, isLoading, error, addBooking, message, fetchBookings, removeBooking, approvalBooking };
+    const fetchBookingsByUserId = async (userId) => {
+        isLoading.value = true;
+        error.value = null;
+
+        try {
+            const authStore = useAuthStore();
+            const userId = authStore.user?.id;
+            const response = await getBookingsByUserId(userId);
+            bookingData.value = response.data;
+
+            if (response.status === 'success') {
+                message.value = "Data Booking Berhasil diambil.";
+                return true;
+            } else {
+                message.value = "Data Booking Gagal diambil.";
+                return false;
+            }
+
+        } catch (err) {
+            console.error('Error fetching booking data:', err);
+            error.value = err;
+            message.value = "Terjadi kesalahan pada server.";
+            return false;
+        }
+        finally {
+            isLoading.value = false;
+        }
+    }
+
+    return { bookingData, isLoading, error, addBooking, message, fetchBookings, removeBooking, approvalBooking, fetchBookingsByUserId };
 
 });
 

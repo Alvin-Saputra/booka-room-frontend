@@ -25,6 +25,15 @@ export const getBookings = async () => {
         throw error;
     }
 };
+export const getBookingsByUserId = async (UserId) => {
+
+    try {
+        const response = await apiClient.get(`/bookings/user/${UserId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
 export const deleteBooking = async (bookingId) => {
     try {
         const response = await apiClient.delete(`/bookings/${bookingId}`);

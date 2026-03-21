@@ -2,13 +2,16 @@
 import { ref, onMounted, reactive } from 'vue';
 import { useRoomStore } from '@/store/roomStore';
 import { storeToRefs } from 'pinia';
+import { useRoute } from 'vue-router';
 import DatePicker from '@/components/common/DatePicker.vue';
 import TimePicker from '@/components/common/TimePicker.vue';
 import { useBookingStore } from '@/store/bookingStore';
 import Alert from '@/components/common/Alert.vue';
 
+const route = useRoute();
+
 const roomStore = useRoomStore();
-const { roomData, isLoading} = storeToRefs(roomStore);
+const { roomData, isLoading } = storeToRefs(roomStore);
 
 const bookingStore = useBookingStore();
 const { message } = storeToRefs(bookingStore);
@@ -19,10 +22,15 @@ const endDate = ref(null);
 const startTime = ref(null);
 const endTime = ref(null);
 const purpose = ref(null);
-const status = ref(null);
 
-onMounted(() => {
-    roomStore.fetchRooms();
+onMounted(async () => {
+    await roomStore.fetchRooms();
+    
+    // PERBAIKAN DI SINI: Cek apakah ada roomId di URL
+    if (route.query.roomId) {
+        // Konversi ke Number agar tipe datanya cocok dengan item-value di v-select (jika ID Anda berupa angka di database)
+        selectedRoomId.value = Number(route.query.roomId);
+    }
 });
 
 
@@ -62,7 +70,7 @@ const openEndTimePickerDialog = () => {
 };
 
 const handleAddBooking = async () => {
-    const isSuccess = await bookingStore.addBooking(selectedRoomId.value, startDate.value, endDate.value, startTime.value, endTime.value, purpose.value, status.value);
+    const isSuccess = await bookingStore.addBooking(selectedRoomId.value, startDate.value, endDate.value, startTime.value, endTime.value, purpose.value);
 
     if (isSuccess) {
         triggerAlert('success', 'Success', message);
@@ -72,7 +80,6 @@ const handleAddBooking = async () => {
         startTime.value = null;
         endTime.value = null;
         purpose.value = null;
-        status.value = null;
     }
     else {
         triggerAlert('error', 'Error', message);
@@ -81,8 +88,7 @@ const handleAddBooking = async () => {
         endDate.value = null;
         startTime.value = null;
         endTime.value = null;
-        purpose.value = null;
-        status.value = null;
+        purpose.value = null;;
     }
 };
 
@@ -101,7 +107,7 @@ const handleAddBooking = async () => {
                         <v-select v-model="selectedRoomId" :items="roomData" item-title="room_name" item-value="id"
                             label="Pilih Ruangan" variant="outlined" :loading="isLoading"
                             placeholder="Cari atau pilih ruangan...">
-                            <template v-slot:item="{ props,  item }">
+                            <template v-slot:item="{ props, item }">
                                 <v-list-item v-bind="props" :title="item.room_name">
                                     <template v-slot:subtitle>
                                         <div class="flex items-center gap-1 mt-1 text-gray-600">
@@ -148,15 +154,8 @@ const handleAddBooking = async () => {
 
                 <v-row>
                     <v-col cols="12">
-                        <v-combobox v-model="status" clearable label="Status"
-                            :items="['Pending', 'Approved', 'Rejected']" variant="outlined" class="mb-6"></v-combobox>
-                    </v-col>
-                </v-row>
-
-                <v-row>
-                    <v-col cols="12">
                         <v-btn type="submit" color="primary" block>
-                            Submit
+                            Confirm
                         </v-btn>
                     </v-col>
                 </v-row>

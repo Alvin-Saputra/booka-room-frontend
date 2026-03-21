@@ -28,10 +28,7 @@ const emit = defineEmits(['request-delete', 'request-update']);
 
                 <v-card-actions>
                     <!-- <v-btn class="ms-2 mb-2" size="small" text="BOOK ROOM" variant="outlined"></v-btn> -->
-                    <v-btn prepend-icon="$edit" color="primary" rounded flat variant="outlined"
-                        @click="emit('request-update', props.room)">Update</v-btn>
-                    <v-btn prepend-icon="$delete" color="red" rounded flat variant="outlined"
-                        @click="emit('request-delete', props.room)">Delete</v-btn>
+                    <slot name="actions"></slot>
                 </v-card-actions>
             </div>
 

@@ -2,7 +2,7 @@
 import { onMounted } from 'vue';
 import { useRoomStore } from '@/store/roomStore'; // Import store
 import { storeToRefs } from 'pinia'
-import RoomCard from '@/components/admin/RoomCard.vue';
+import RoomCard from '@/components/common/RoomCard.vue';
 import AddRoomDialog from '@/components/admin/AddRoomDialog.vue';
 import ConfirmationDialog from '@/components/common/ConfirmationDialog.vue';
 import Alert from '@/components/common/Alert.vue';
@@ -19,7 +19,6 @@ onMounted(() => {
   roomStore.fetchRooms();
 });
 
-const showAddRoomDialog = ref(false);
 const showDeleteDialog = ref(false);
 const showEditRoomDialog = ref(false);
 
@@ -45,9 +44,6 @@ const triggerAlert = (type, title, msg) => {
 };
 
 
-const openAddRoomDialog = () => {
-  showAddRoomDialog.value = true;
-};
 
 const openDeleteRoomDialog = (room) => {
   selectedRoom.id = room.id;
@@ -61,19 +57,6 @@ const openEditRoomDialog = (room) => {
   showEditRoomDialog.value = true
 }
 
-
-const handleAddRoom = async (roomName, capacity) => {
-  const isSuccess = await roomStore.addRoom(roomName, capacity);
-  if (isSuccess) {
-    triggerAlert('success', 'Success', message);
-    showAddRoomDialog.value = false;  
-  }
-  else {
-    triggerAlert('error', 'Error', message);
-    showAddRoomDialog.value = false;
-  }
-
-};
 
 const handleDeleteRoom = async () => {
   const isSuccess = await roomStore.removeRoom(selectedRoom.id);
@@ -118,9 +101,7 @@ const handleEditRoom = async (roomName, capacity) => {
           Room Management
         </h1>
       </div>
-      <v-btn color="primary" prepend-icon="mdi-plus" rounded flat v-on:click="openAddRoomDialog">
-        Add Room
-      </v-btn>
+
     </div>
 
     <v-skeleton-loader v-if="isLoading" type="card, card, card" />
@@ -131,7 +112,18 @@ const handleEditRoom = async (roomName, capacity) => {
 
     <v-row v-else>
       <v-col v-for="item in roomData" :key="item.id" cols="12">
-        <RoomCard :room="item" @request-delete="openDeleteRoomDialog" @request-update="openEditRoomDialog"/>
+        <RoomCard :room="item">
+          <template #actions>
+            <div>
+              <v-btn color=" error" variant="text" @click="openDeleteRoomDialog(item)">
+                Detail
+              </v-btn>
+              <v-btn color="primary" variant="flat" :to="{ path: '/user/booking-room', query: { roomId: item.id } }">
+                Book
+              </v-btn>
+            </div>
+          </template>
+        </RoomCard>
       </v-col>
     </v-row>
     <AddRoomDialog v-model="showAddRoomDialog" :on-custom-click="handleAddRoom" />

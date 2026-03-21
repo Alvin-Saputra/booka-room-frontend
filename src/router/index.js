@@ -11,6 +11,7 @@ import AdminLayout from '@/layout/AdminLayout.vue'
 import UserLayout from '@/layout/UserLayout.vue'
 import RoomCatalogView from '@/views/user/RoomCatalogView.vue'
 import BookingHistoryView from '@/views/user/BookingHistoryView.vue'
+import BookingFormView from '@/views/user/BookingFormView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -69,12 +70,17 @@ const router = createRouter({
       children: [
         {
           path: '',
-          redirect: '/admin/user'
+          redirect: '/user/room'
         },
         {
           path: 'room',
           name: 'user-room', // [PERBAIKAN] Nama diubah menjadi unik
           component: RoomCatalogView,
+        },
+        {
+          path: 'booking-room',
+          name: 'user-booking-room', // [PERBAIKAN] Nama diubah menjadi unik
+          component: BookingFormView,
         },
         {
           path: 'booking-history',
