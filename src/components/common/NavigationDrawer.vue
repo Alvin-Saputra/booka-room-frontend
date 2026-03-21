@@ -71,7 +71,7 @@ const handleLogout = async () => {
     <v-list nav density="comfortable" class="px-2 py-3">
 
       <v-list-item
-        to="/dashboard"
+        to="/admin/dashboard"
         class="rounded-xl mb-1 hover:bg-gray-100 transition"
       >
         <template #prepend>

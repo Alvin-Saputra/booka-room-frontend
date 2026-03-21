@@ -32,7 +32,13 @@ export const useAuthStore = defineStore("auth", () => {
                     role: response.data.role
                 }));
 
-                router.push('/admin');
+                if (response.data.role === 'admin') {
+                    router.push('/admin/dashboard');
+                } else if (response.data.role === 'user') {
+                    router.push('/user/room');
+                } else {
+                    router.push('/'); // Fallback jika role tidak dikenali
+                }
                 message.value = "Berhasil Login"
                 return true;
 
@@ -40,8 +46,8 @@ export const useAuthStore = defineStore("auth", () => {
 
 
             }
-        } catch (error) {
-            console.error('Error saat login:', error);
+        } catch (err) {
+            console.error('Error saat login:', err);
             error.value = err.response?.data?.message || 'Gagal login';
             message.value = "Gagal Login";
             return false;

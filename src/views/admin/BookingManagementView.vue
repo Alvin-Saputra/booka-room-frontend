@@ -79,7 +79,7 @@ const openConfirmationDialog = (id, callback, message) => {
           Booking Management
         </h1>
       </div>
-      <v-btn color="primary" prepend-icon="mdi-plus" rounded flat to="/add-booking">
+      <v-btn color="primary" prepend-icon="mdi-plus" rounded flat to="/admin/add-booking">
         Create Booking
       </v-btn>
     </div>

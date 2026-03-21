@@ -18,65 +18,70 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: LoginView, // Halaman Login Anda
+      component: LoginView,
       meta: { requiresGuest: true }
     },
-
-
-
+    {
+      path: '',
+      redirect: '/login',
+      meta: { requiresGuest: true }
+    },
     {
       path: '/admin',
       component: AdminLayout,
-      meta: { requiresAuth: true }, // Proteksi diterapkan ke semua rute di dalam children
+      meta: { requiresAuth: true, role: 'admin' },
       children: [
         {
           path: '',
-          redirect: '/dashboard' // Jika akses '/', langsung lempar ke dashboard
+          redirect: '/admin/dashboard' // [PERBAIKAN] Redirect ke /admin/dashboard
         },
         {
           path: 'dashboard',
-          name: 'dashboard',
+          name: 'admin-dashboard', // [PERBAIKAN] Beri prefix agar lebih aman
           component: DashboardView,
         },
         {
           path: 'room',
-          name: 'room',
+          name: 'admin-room', // [PERBAIKAN] Nama diubah menjadi unik
           component: RoomManagementView,
         },
         {
           path: 'user',
-          name: 'user',
+          name: 'admin-user',
           component: UserManagementView,
         },
         {
           path: 'booking',
-          name: 'booking',
+          name: 'admin-booking',
           component: BookingManagementView,
         },
         {
-          path: '/add-booking',
-          name: 'add-booking',
-          component: BookingCreateView, // Halaman Login Anda
+          path: 'add-booking', // [PERBAIKAN] Hilangkan '/' agar tetap berada di bawah /admin
+          name: 'admin-add-booking',
+          component: BookingCreateView,
         },
       ]
     },
     {
       path: '/user',
       component: UserLayout,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, role: 'user' },
       children: [
-         {
+        {
+          path: '',
+          redirect: '/admin/user'
+        },
+        {
           path: 'room',
-          name: 'room',
+          name: 'user-room', // [PERBAIKAN] Nama diubah menjadi unik
           component: RoomCatalogView,
         },
         {
           path: 'booking-history',
-          name: 'booking-history',
+          name: 'user-booking-history',
           component: BookingHistoryView
         },
       ]
-
     },
   ],
 })
@@ -85,15 +90,28 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
   const isAuth = authStore.isAuthenticated;
+  const userRole = authStore.user?.role; // Ambil role dari state Pinia
 
-  // Jika halaman butuh login tapi user belum login
+  // 1. Jika belum login tapi mau ke halaman yang butuh login
+
+
   if (to.meta.requiresAuth && !isAuth) {
     next({ name: 'login' });
   }
-  // Jika user sudah login tapi mencoba akses halaman login
+  // 2. Jika sudah login tapi mau ke halaman login (Re-visit web)
   else if (to.meta.requiresGuest && isAuth) {
-    next({ name: 'room' });
+    if (userRole === 'admin') next({ name: 'admin-dashboard' });
+    else if (userRole === 'user') next({ name: 'user-room' });
+    else next();
   }
+  // 3. Jika sudah login, cek apakah role-nya sesuai dengan meta route
+  else if (to.meta.requiresAuth && to.meta.role && to.meta.role !== userRole) {
+    // Jika role tidak cocok, tendang kembali ke halaman masing-masing
+    if (userRole === 'admin') next({ name: 'admin-dashboard' });
+    else if (userRole === 'user') next({ name: 'user-room' });
+    else next({ name: 'login' });
+  }
+  // 4. Jika semua aman, izinkan masuk
   else {
     next();
   }

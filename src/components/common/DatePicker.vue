@@ -4,10 +4,10 @@ import { defineEmits } from 'vue';
 import { computed } from 'vue';
 
 const props = defineProps({
-    modelValue: {
-        type: Boolean,
-        default: false
-    },
+  modelValue: {
+    type: Boolean,
+    default: false
+  },
 
 });
 
@@ -21,23 +21,29 @@ const isDialogVisible = computed({
 
 
 const handleSubmit = () => {
-    emit('submit-date', value.value);
-    isDialogVisible.value = false; // Menutup dialog
+  emit('submit-date', value.value);
+  isDialogVisible.value = false; // Menutup dialog
 };
 
 </script>
 
 <template>
-  <v-dialog v-model="isDialogVisible">
-    <v-layout>
-      <v-container>
-        <div class="d-flex flex-wrap justify-space-around ga-6 bg-white p-4 rounded-xl">
-          <v-date-picker v-model="value" color="primary" landscape landscape-header-width="250">
-          </v-date-picker>
-          
-          <v-btn color="primary" @click="handleSubmit">Submit</v-btn>
-        </div>
-      </v-container>
-    </v-layout>
+  <v-dialog v-model="isDialogVisible" max-width="600">
+
+
+    <v-card class="rounded-xl">
+      <v-date-picker v-model="value" color="primary" landscape landscape-header-width="250">
+      </v-date-picker>
+
+      <v-card-actions>
+        <v-btn color="gray" variant="text" @click="isDialogVisible = false">
+          Cancel
+        </v-btn>
+        <v-btn color="primary" @click="handleSubmit">Confirm</v-btn>
+      </v-card-actions>
+
+    </v-card>
+
+
   </v-dialog>
 </template>

@@ -16,7 +16,7 @@ const handleLogout = () => {
 
 <template>
 
-    <v-app-bar color="white" elevation="1">
+    <v-app-bar color="white" scroll-behavior="elevate">
         <v-app-bar-title class="font-bold text-primary">
             BookaRoom
         </v-app-bar-title>
