@@ -34,8 +34,7 @@ Proyek ini dirancang dengan memisahkan hak akses antara **Admin** (untuk mengelo
 * [Histoire](https://histoire.dev/) - UI Component explorer (untuk *storyboarding* komponen)
 
 **Backend:**
-Repository:
-* https://github.com/Alvin-Saputra/booka-room-backend
+* Repository Backend: https://github.com/Alvin-Saputra/booka-room-backend
 * [Node.js](https://nodejs.org/) & [Express.js](https://expressjs.com/) - Server environment & web framework
 * [MySQL](https://www.mysql.com/) - Database Relasional
 * JSON Web Token (JWT) - Autentikasi
