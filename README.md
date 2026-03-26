@@ -37,7 +37,13 @@ Before you begin, ensure you have the correct Node.js version installed:
    ```bash
    Run the Development Server
 
-## Project Structure
+## 📜 Available Scripts
+      In the project directory, you can run the following commands:
+      npm run dev : Starts the Vite development server.
+      npm run build : Compiles and minifies the application for production.
+      npm run story:dev : Starts the Histoire development server to view and develop UI components in isolation.lly.
+
+## 📂 Project Structure
    ```
    booka-room-frontend/
    ├── src/
