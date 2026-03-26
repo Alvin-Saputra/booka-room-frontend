@@ -24,3 +24,35 @@ Before you begin, ensure you have the correct Node.js version installed:
    ```bash
    git clone [https://github.com/your-username/booka-room-frontend.git](https://github.com/your-username/booka-room-frontend.git)
    cd booka-room-frontend
+   
+2. **Install Depedencies:**
+   ```bash
+   npm install
+   
+3. **Set Up Environemnt Variables:**
+   ```bash
+   VITE_API_BASE_URL=http://localhost:3000
+   
+4. **Run The Development Server:**
+   ```bash
+   Run the Development Server
+
+## Project Structure
+   ```
+   booka-room-frontend/
+   ├── src/
+   │   ├── assets/        # Static assets (CSS, images)
+   │   ├── components/    # Reusable Vue components
+   │   ├── layout/        # Layout components (e.g., AdminLayout, UserLayout)
+   │   ├── router/        # Vue Router configuration
+   │   ├── service/       # Axios API services (Auth, Booking, Room, User)
+   │   ├── store/         # Pinia state management stores
+   │   ├── views/         # Page-level components
+   │   ├── App.vue        # Root component
+   │   └── main.js        # Application entry point
+   ├── public/            # Public static assets
+   ├── .env.example       # Example environment variables
+   ├── package.json       # Project dependencies and scripts
+   ├── vite.config.js     # Vite configuration
+   ├── tailwind.config.js # Tailwind CSS configuration
+   └── README.md          # Project documentation
