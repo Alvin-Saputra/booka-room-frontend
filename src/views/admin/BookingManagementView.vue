@@ -14,8 +14,8 @@ const selectedId = ref(null);
 const confirmationAction = ref(null);
 const confirmationMessage = ref(null);
 
-onMounted(() => {
-  bookingStore.fetchBookings();
+onMounted(async () => {
+  await bookingStore.fetchBookings();
 });
 
 

@@ -34,6 +34,16 @@ export const getBookingsByUserId = async (UserId) => {
         throw error;
     }
 };
+
+export const getBookingsStatistic = async () => {
+
+    try {
+        const response = await apiClient.get('/bookings/stats');
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
 export const deleteBooking = async (bookingId) => {
     try {
         const response = await apiClient.delete(`/bookings/${bookingId}`);

@@ -14,9 +14,9 @@ const roomStore = useRoomStore();
 
 const { roomData, isLoading, message } = storeToRefs(roomStore);
 
-onMounted(() => {
+onMounted(async () => {
   // Panggil action dari store
-  roomStore.fetchRooms();
+  await roomStore.fetchRooms();
 });
 
 const showDeleteDialog = ref(false);
@@ -94,44 +94,51 @@ const handleEditRoom = async (roomName, capacity) => {
 
 
 <template>
-  <div class="m-24">
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-2">
-        <h1 class="text-3xl font-semibold">
-          Room Management
+  <div>
+
+    <div class="flex items-center justify-between mb-8">
+
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">
+          Katalog Ruangan
         </h1>
+        <p class="text-gray-500 mt-1">
+          Temukan dan pesan ruangan untuk meeting Anda.
+        </p>
       </div>
 
     </div>
 
-    <v-skeleton-loader v-if="isLoading" type="card, card, card" />
+    <div v-if="isLoading" class="my-12">
+      <v-skeleton-loader type="card, card, card" />
+    </div>
 
-    <v-alert v-else-if="!roomData || roomData.length === 0" type="info" variant="tonal">
-      Belum ada data room.
+    <v-alert v-else-if="!roomData || roomData.length === 0" type="info" variant="tonal" class="my-12">
+      Belum ada data ruangan yang tersedia.
     </v-alert>
 
     <v-row v-else>
-      <v-col v-for="item in roomData" :key="item.id" cols="12">
+      <v-col v-for="item in roomData" :key="item.id" cols="12" sm="6" lg="4">
         <RoomCard :room="item">
           <template #actions>
-            <div>
-              <v-btn color=" error" variant="text" @click="openDeleteRoomDialog(item)">
+            <div class="flex items-center justify-end gap-3 w-full">
+
+              <v-btn color="secondary" variant="text" class="font-semibold" @click="openDeleteRoomDialog(item)">
                 Detail
               </v-btn>
-              <v-btn color="primary" variant="flat" :to="{ path: '/user/booking-room', query: { roomId: item.id } }">
-                Book
+
+              <v-btn color="primary" variant="flat" class="px-6 rounded-lg"
+                :to="{ path: '/user/booking-room', query: { roomId: item.id } }">
+                Booking
               </v-btn>
+
             </div>
           </template>
         </RoomCard>
       </v-col>
     </v-row>
+
     <AddRoomDialog v-model="showAddRoomDialog" :on-custom-click="handleAddRoom" />
-    <EditRoomDialog v-model="showEditRoomDialog" :on-custom-click="handleEditRoom" :room="selectedRoom" />
-    <ConfirmationDialog v-model="showDeleteDialog" :on-custom-click="handleDeleteRoom"
-      :message="'Apakah anda yakin ingin mengahpus data kamar ini?'" />
-    <Alert v-model="alertConfig.show" :type="alertConfig.type" :title="alertConfig.title"
-      :message="alertConfig.message" />
   </div>
 </template>
 

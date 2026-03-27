@@ -5,10 +5,12 @@ import { useAuthStore } from "./authStore";
 import { getBookings } from "@/service/bookingService";
 import { deleteBooking } from "@/service/bookingService";
 import { bookingApproval } from "@/service/bookingService";
+import { getBookingsStatistic } from "@/service/bookingService";
 
 
 export const useBookingStore = defineStore("booking", () => {
     const bookingData = ref([]);
+    const bookingDataStatistic = ref(null);
     const isLoading = ref(false);
     const error = ref(null);
     const message = ref(null);
@@ -46,15 +48,15 @@ export const useBookingStore = defineStore("booking", () => {
             isLoading.value = false;
             // return false;
         }
-    }
+    };
 
-    const fetchBookings = async () => {
+    const fetchBookingsStatistic = async () => {
         isLoading.value = true;
         error.value = null;
 
         try {
-            const response = await getBookings();
-            bookingData.value = response.data;
+            const response = await getBookingsStatistic();
+            bookingDataStatistic.value = response.data;
 
             if (response.status === 'success') {
                 message.value = "Data Booking Berhasil diambil.";
@@ -73,7 +75,7 @@ export const useBookingStore = defineStore("booking", () => {
         finally {
             isLoading.value = false;
         }
-    }
+    };
 
     const removeBooking = async (bookingId) => {
         try {
@@ -102,7 +104,7 @@ export const useBookingStore = defineStore("booking", () => {
         finally {
             isLoading.value = false;
         }
-    }
+    };
 
 
     const approvalBooking = async (bookingId, status) => {
@@ -131,7 +133,7 @@ export const useBookingStore = defineStore("booking", () => {
             return false;
         }
 
-    }
+    };
 
     const fetchBookingsByUserId = async (userId) => {
         isLoading.value = true;
@@ -160,9 +162,36 @@ export const useBookingStore = defineStore("booking", () => {
         finally {
             isLoading.value = false;
         }
-    }
+    };
 
-    return { bookingData, isLoading, error, addBooking, message, fetchBookings, removeBooking, approvalBooking, fetchBookingsByUserId };
+     const fetchBookings = async () => {
+        isLoading.value = true;
+        error.value = null;
+
+        try {
+            const response = await getBookings();
+            bookingData.value = response.data;
+
+            if (response.status === 'success') {
+                message.value = "Data Booking Berhasil diambil.";
+                return true;
+            } else {
+                message.value = "Data Booking Gagal diambil.";
+                return false;
+            }
+
+        } catch (err) {
+            console.error('Error fetching booking data:', err);
+            error.value = err;
+            message.value = "Terjadi kesalahan pada server.";
+            return false;
+        }
+        finally {
+            isLoading.value = false;
+        }
+    };
+
+    return { bookingData, isLoading, error, addBooking, message, fetchBookings, removeBooking, approvalBooking, fetchBookingsByUserId, fetchBookingsStatistic, bookingDataStatistic };
 
 });
 

@@ -12,8 +12,8 @@ import Alert from '@/components/common/Alert.vue';
 const userStore = useUserStore();
 const { userData, isLoading, message } = storeToRefs(userStore);
 
-onMounted(() => {
-  userStore.fetchUsers();
+onMounted(async () => {
+  await userStore.fetchUsers();
 });
 
 const showDeleteDialog = ref(false);

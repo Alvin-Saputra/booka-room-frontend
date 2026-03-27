@@ -14,9 +14,9 @@ const roomStore = useRoomStore();
 
 const { roomData, isLoading, message } = storeToRefs(roomStore);
 
-onMounted(() => {
+onMounted(async () => {
   // Panggil action dari store
-  roomStore.fetchRooms();
+  await roomStore.fetchRooms();
 });
 
 const showAddRoomDialog = ref(false);
