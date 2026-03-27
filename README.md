@@ -1,38 +1,64 @@
-# booka-room
+# Booka Room - Frontend 🏢
 
-This template should help get you started developing with Vue 3 in Vite.
+This repository contains the **Frontend** application for the **Booka Room** (Meeting Room Management System) portfolio project. It is designed to provide a responsive, user-friendly interface for managing meeting room reservations, integrating seamlessly with the Express.js backend API.
 
-## Recommended IDE Setup
+## 🚀 Technologies Used
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+This project leverages a modern frontend stack to ensure high performance and maintainability:
+- **Framework:** Vue 3
+- **Build Tool:** Vite
+- **State Management:** Pinia
+- **Routing:** Vue Router
+- **UI & Styling:** Vuetify and Tailwind CSS
+- **HTTP Client:** Axios
+- **Component Workshop:** Histoire
 
-## Recommended Browser Setup
+## ⚙️ Prerequisites
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+Before you begin, ensure you have the correct Node.js version installed:
+- **Node.js:** `^20.19.0` or `>=22.12.0`
 
-## Customize configuration
+## 🛠️ Installation & Setup
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+1. **Clone this repository:**
+   ```bash
+   git clone [https://github.com/your-username/booka-room-frontend.git](https://github.com/your-username/booka-room-frontend.git)
+   cd booka-room-frontend
+   
+2. **Install Depedencies:**
+   ```bash
+   npm install
+   
+3. **Set Up Environemnt Variables:**
+   ```bash
+   VITE_API_BASE_URL=http://localhost:3000
+   
+4. **Run The Development Server:**
+   ```bash
+   Run the Development Server
 
-## Project Setup
+## 📜 Available Scripts
+      In the project directory, you can run the following commands:
+      npm run dev : Starts the Vite development server.
+      npm run build : Compiles and minifies the application for production.
+      npm run story:dev : Starts the Histoire development server to view and develop UI components in isolation.lly.
 
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+## 📂 Project Structure
+   ```
+   booka-room-frontend/
+   ├── src/
+   │   ├── assets/        # Static assets (CSS, images)
+   │   ├── components/    # Reusable Vue components
+   │   ├── layout/        # Layout components (e.g., AdminLayout, UserLayout)
+   │   ├── router/        # Vue Router configuration
+   │   ├── service/       # Axios API services (Auth, Booking, Room, User)
+   │   ├── store/         # Pinia state management stores
+   │   ├── views/         # Page-level components
+   │   ├── App.vue        # Root component
+   │   └── main.js        # Application entry point
+   ├── public/            # Public static assets
+   ├── .env.example       # Example environment variables
+   ├── package.json       # Project dependencies and scripts
+   ├── vite.config.js     # Vite configuration
+   ├── tailwind.config.js # Tailwind CSS configuration
+   └── README.md          # Project documentation
