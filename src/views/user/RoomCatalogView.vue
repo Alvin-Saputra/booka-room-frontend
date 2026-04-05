@@ -4,10 +4,10 @@ import { useRoomStore } from '@/store/roomStore'; // Import store
 import { storeToRefs } from 'pinia'
 import RoomCard from '@/components/common/RoomCard.vue';
 import AddRoomDialog from '@/components/admin/AddRoomDialog.vue';
-import ConfirmationDialog from '@/components/common/ConfirmationDialog.vue';
 import Alert from '@/components/common/Alert.vue';
 import { ref, reactive } from 'vue';
-import EditRoomDialog from '@/components/admin/EditRoomDialog.vue';
+import RoomDetailPanel from '@/components/user/RoomDetailPanel.vue';
+import RoomCardCatalog from '@/components/user/RoomCardCatalog.vue';
 
 
 const roomStore = useRoomStore();
@@ -21,11 +21,14 @@ onMounted(async () => {
 
 const showDeleteDialog = ref(false);
 const showEditRoomDialog = ref(false);
+const showDetailRoomDialog = ref(false);
 
 const selectedRoom = reactive({
   id: null,
   roomName: '',
   capacity: '',
+  description: '',
+  facilities: []
 });
 
 
@@ -50,53 +53,25 @@ const openDeleteRoomDialog = (room) => {
   showDeleteDialog.value = true;
 };
 
-const openEditRoomDialog = (room) => {
+const openDetailRoomDialog = (room) => {
   selectedRoom.id = room.id;
   selectedRoom.roomName = room.room_name;
   selectedRoom.capacity = room.capacity;
-  showEditRoomDialog.value = true
-}
-
-
-const handleDeleteRoom = async () => {
-  const isSuccess = await roomStore.removeRoom(selectedRoom.id);
-  if (isSuccess) {
-    triggerAlert('success', 'Success', message);
-    showDeleteDialog.value = false;
-    selectedRoom.id = null;
-  }
-  else {
-    triggerAlert('error', 'Error', message);
-    showDeleteDialog.value = false;
-    selectedRoom.id = null;
-  }
+  selectedRoom.description = room.description;
+  selectedRoom.facilities = room.facilities;
+  showDetailRoomDialog.value = true;
 };
 
-const handleEditRoom = async (roomName, capacity) => {
-  const isSuccess = await roomStore.updateRoom(roomName, capacity, selectedRoom.id);
-  if (isSuccess) {
-    triggerAlert('success', 'Success', message);
-    showEditRoomDialog.value = false;
-    selectedRoom.id = null;
-    selectedRoom.roomName = '';
-    selectedRoom.capacity = '';
-  }
-  else {
-    triggerAlert('error', 'Error', message);
-    showEditRoomDialog.value = false;
-    selectedRoom.id = null;
-    selectedRoom.roomName = '';
-    selectedRoom.capacity = '';
-  }
-};
+
+
 
 </script>
 
 
 <template>
-  <div>
+  <div class="max-w-7xl mx-auto">
 
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center justify-between mb-8 bg">
 
       <div>
         <h1 class="text-3xl font-bold text-gray-800">
@@ -117,28 +92,26 @@ const handleEditRoom = async (roomName, capacity) => {
       Belum ada data ruangan yang tersedia.
     </v-alert>
 
-    <v-row v-else>
-      <v-col v-for="item in roomData" :key="item.id" cols="12" sm="6" lg="4">
-        <RoomCard :room="item">
+    <v-row v-else dense>
+      <v-col v-for="item in roomData" :key="item.id" cols="12" sm="6" md="4" class="px-1 py-1">
+
+        <RoomCardCatalog :room="item">
           <template #actions>
-            <div class="flex items-center justify-end gap-3 w-full">
-
-              <v-btn color="secondary" variant="text" class="font-semibold" @click="openDeleteRoomDialog(item)">
-                Detail
-              </v-btn>
-
-              <v-btn color="primary" variant="flat" class="px-6 rounded-lg"
+            <div class="flex items-center gap-3 w-full">
+              <v-btn @click="openDetailRoomDialog(item)">Detail</v-btn>
+              <v-btn class="flex-1 text-white rounded-lg hover:bg-gray-500 " color="black" variant="flat"
                 :to="{ path: '/user/booking-room', query: { roomId: item.id } }">
                 Booking
               </v-btn>
-
             </div>
           </template>
-        </RoomCard>
+        </RoomCardCatalog>
       </v-col>
     </v-row>
 
     <AddRoomDialog v-model="showAddRoomDialog" :on-custom-click="handleAddRoom" />
+    <RoomDetailPanel v-model="showDetailRoomDialog" :room="selectedRoom" />
+
   </div>
 </template>
 

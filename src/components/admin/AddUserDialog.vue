@@ -3,14 +3,14 @@ import { computed } from 'vue';
 import { ref } from 'vue';
 
 const props = defineProps({
-    modelValue: {
-        type: Boolean,
-        default: false
-    },
-    onCustomClick: {
-        type: Function,
-        required: true
-    }
+  modelValue: {
+    type: Boolean,
+    default: false
+  },
+  onCustomClick: {
+    type: Function,
+    required: true
+  }
 
 });
 
@@ -25,56 +25,31 @@ const email = ref(null);
 const role = ref(null);
 
 const handleSubmit = () => {
-  props.onCustomClick(name.value, email.value, role.value);    
-  isDialogVisible.value = false; 
+  props.onCustomClick(name.value, email.value, role.value);
+  isDialogVisible.value = false;
 };
 
 </script>
 
 
 <template>
-  <v-dialog
-    v-model="isDialogVisible"
-    max-width="400"
-    class="p-6"
-  >
+  <v-dialog v-model="isDialogVisible" max-width="400" class="p-6">
     <v-card class="w-full max-w-2xl p-6 rounded-xl shadow-lg">
       <h2 class="text-2xl font-bold mb-6 text-center">
         Register User
       </h2>
 
       <v-form @submit.prevent="handleSubmit">
-        <v-text-field
-          v-model="name"
-          label="Name"
-          variant="outlined"
-          class="mb-4"
-        />
+        <v-text-field v-model="name" label="Name" variant="outlined" class="mb-4" />
 
-        <v-text-field
-          v-model="email"
-          label="Email"
-          type="email"
-          variant="outlined"
-          class="mb-4"
-        />
+        <v-text-field v-model="email" label="Email" type="email" variant="outlined" class="mb-4" />
+        
 
-            
 
-        <v-combobox
-          v-model="role"
-          clearable
-          label="Role"
-          :items="['Admin', 'User']"
-          variant="outlined"
-          class="mb-6"
-        />
 
-        <v-btn
-          type="submit"
-          color="primary"
-          block
-        >
+        <v-combobox v-model="role" clearable label="Role" :items="['Admin', 'User']" variant="outlined" class="mb-6" />
+
+        <v-btn type="submit" color="primary" block>
           Submit
         </v-btn>
       </v-form>

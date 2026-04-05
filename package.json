@@ -13,6 +13,8 @@
     "story:preview": "histoire preview"
   },
   "dependencies": {
+    "@cloudinary/url-gen": "^1.22.0",
+    "@cloudinary/vue": "^1.13.4",
     "@mdi/font": "^7.4.47",
     "apexcharts": "^5.10.4",
     "axios": "^1.13.6",

@@ -7,12 +7,13 @@ const props = defineProps({
 
 });
 
-const emit = defineEmits(['request-delete', 'request-update']);
+const emit = defineEmits(['show-detail-panel']);
+
 </script>
 
 
 <template>
-    <v-card color="#f0f0f0" class="w-100 h-100">
+    <v-card color="#f0f0f0" class="w-100 h-100" @click="$emit('show-detail-panel')">
         <div class="d-flex flex-no-wrap justify-space-between h-100">
             <div class="d-flex flex-column">
                 <div>

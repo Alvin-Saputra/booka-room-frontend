@@ -2,3 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+body, .v-application {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* 2. Terapkan Lato otomatis untuk semua tag Heading */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif !important;
+  
+}
