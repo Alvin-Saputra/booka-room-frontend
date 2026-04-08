@@ -8,7 +8,7 @@ import ConfirmationDialog from '@/components/common/ConfirmationDialog.vue';
 import Alert from '@/components/common/Alert.vue';
 import { ref, reactive } from 'vue';
 import EditRoomDialog from '@/components/admin/EditRoomDialog.vue';
-
+import RoomDetailPanel from '@/components/common/RoomDetailPanel.vue';
 
 const roomStore = useRoomStore();
 
@@ -22,11 +22,14 @@ onMounted(async () => {
 const showAddRoomDialog = ref(false);
 const showDeleteDialog = ref(false);
 const showEditRoomDialog = ref(false);
+const showDetailRoomDialog = ref(false);
 
 const selectedRoom = reactive({
   id: null,
   roomName: '',
   capacity: '',
+  description: '',
+  facilities: []
 });
 
 
@@ -58,8 +61,20 @@ const openEditRoomDialog = (room) => {
   selectedRoom.id = room.id;
   selectedRoom.roomName = room.room_name;
   selectedRoom.capacity = room.capacity;
+  selectedRoom.facilities = room.facilities || [];
+  selectedRoom.description = room.description || '';
   showEditRoomDialog.value = true
 }
+
+const openDetailRoomDialog = (room) => {
+  selectedRoom.id = room.id;
+  selectedRoom.roomName = room.room_name;
+  selectedRoom.capacity = room.capacity;
+  selectedRoom.description = room.description;
+  selectedRoom.facilities = room.facilities;
+  showDetailRoomDialog.value = true;
+};
+
 
 
 const handleAddRoom = async (roomName, capacity) => {
@@ -89,14 +104,16 @@ const handleDeleteRoom = async () => {
   }
 };
 
-const handleEditRoom = async (roomName, capacity) => {
-  const isSuccess = await roomStore.updateRoom(roomName, capacity, selectedRoom.id);
+const handleEditRoom = async (roomName, capacity, description, facilities) => {
+  const isSuccess = await roomStore.updateRoom(roomName, capacity, description, facilities, selectedRoom.id);
   if (isSuccess) {
     triggerAlert('success', 'Success', message);
     showEditRoomDialog.value = false;
     selectedRoom.id = null;
     selectedRoom.roomName = '';
     selectedRoom.capacity = '';
+    selectedRoom.description = '';
+    selectedRoom.facilities = [];
   }
   else {
     triggerAlert('error', 'Error', message);
@@ -104,6 +121,8 @@ const handleEditRoom = async (roomName, capacity) => {
     selectedRoom.id = null;
     selectedRoom.roomName = '';
     selectedRoom.capacity = '';
+    selectedRoom.description = '';
+    selectedRoom.facilities = [];
   }
 };
 
@@ -111,15 +130,20 @@ const handleEditRoom = async (roomName, capacity) => {
 
 
 <template>
-  <div class="m-24">
+  <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-2">
-        <h1 class="text-3xl font-semibold">
-          Room Management
+      <div class="flex-col items-center gap-2">
+        <h1 class="text-3xl font-bold text-gray-800">
+          Manajemen Ruangan
         </h1>
+
+        <p class="text-gray-500 mt-1">
+          Lihat riwayat pemesanan ruangan yang telah Anda buat
+        </p>
       </div>
-      <v-btn color="primary" prepend-icon="mdi-plus" rounded flat v-on:click="openAddRoomDialog">
-        Add Room
+      <v-btn color="black" prepend-icon="mdi-plus" flat v-on:click="openAddRoomDialog" size="large"
+        class="py-2 rounded-lg hover:bg-gray-700">
+        Tambah Ruangan
       </v-btn>
     </div>
 
@@ -133,23 +157,39 @@ const handleEditRoom = async (roomName, capacity) => {
       <v-col v-for="item in roomData" :key="item.id" cols="12">
         <RoomCard :room="item" ">
           <template #actions>
-          <v-btn color=" error" variant="text" @click="openDeleteRoomDialog(item)">
-          Hapus
-          </v-btn>
-          <v-btn color="primary" variant="flat" @click="openEditRoomDialog(item)">
+
+            <div class=" flex flex-row gap-4">
+
+          <v-btn color="black" variant="flat" size="large" @click="openEditRoomDialog(item)" prepend-icon="mdi-pencil"
+            class="rounded-lg py-2 px-5 hover:bg-gray-700">
             Edit
           </v-btn>
-          </template>
-        </RoomCard>
-      </v-col>
-    </v-row>
-    <AddRoomDialog v-model="showAddRoomDialog" :on-custom-click="handleAddRoom" />
-    <EditRoomDialog v-model="showEditRoomDialog" :on-custom-click="handleEditRoom" :room="selectedRoom" />
-    <ConfirmationDialog v-model="showDeleteDialog" :on-custom-click="handleDeleteRoom"
-      :message="'Apakah anda yakin ingin mengahpus data kamar ini?'" />
-    <Alert v-model="alertConfig.show" :type="alertConfig.type" :title="alertConfig.title"
-      :message="alertConfig.message" />
+          <v-btn color="black" variant="flat" size="large" @click="openDetailRoomDialog(item)"
+            prepend-icon="mdi-information-box-outline" class="rounded-lg py-2 px-5 hover:bg-gray-700">
+            Detail
+          </v-btn>
+          <v-btn variant="tonal" size="large" @click="openDeleteRoomDialog(item)" prepend-icon="mdi-delete"
+            class="rounded-lg hover:bg-red-500 hover:text-white">
+            Hapus
+          </v-btn>
   </div>
+
+</template>
+</RoomCard>
+</v-col>
+</v-row>
+
+<AddRoomDialog v-model="showAddRoomDialog" :on-custom-click="handleAddRoom" />
+
+<EditRoomDialog v-model="showEditRoomDialog" :on-custom-click="handleEditRoom" :room="selectedRoom" />
+
+<ConfirmationDialog v-model="showDeleteDialog" :on-custom-click="handleDeleteRoom"
+  :message="'Apakah anda yakin ingin mengahpus data kamar ini?'" />
+
+<RoomDetailPanel v-model="showDetailRoomDialog" :room="selectedRoom" />
+
+<Alert v-model="alertConfig.show" :type="alertConfig.type" :title="alertConfig.title" :message="alertConfig.message" />
+</div>
 </template>
 
 

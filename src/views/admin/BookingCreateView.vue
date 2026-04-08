@@ -8,7 +8,7 @@ import { useBookingStore } from '@/store/bookingStore';
 import Alert from '@/components/common/Alert.vue';
 
 const roomStore = useRoomStore();
-const { roomData, isLoading} = storeToRefs(roomStore);
+const { roomData, isLoading } = storeToRefs(roomStore);
 
 const bookingStore = useBookingStore();
 const { message } = storeToRefs(bookingStore);
@@ -91,17 +91,28 @@ const handleAddBooking = async () => {
 </script>
 
 <template>
-    <div class="m-24">
-        <v-card class="p-6 w-full" elevation="2" rounded="xl">
-            <h2 class="text-xl font-semibold mb-4">Create Booking</h2>
+    <div class="min-h-screen">
+
+
+        <v-card class="p-6 w-full max-w-3xl mx-auto rounded-lg border border-gray-300" elevation="0">
+            <div class="mb-8 border-b">
+
+                <div class="flex items-center gap-3 mb-2">
+                    <v-icon icon="mdi-calendar-plus" color="black" size="x-large"></v-icon>
+                    <h1 class="text-xl font-semibold mb-4 ">Form Reservasi Ruangan</h1>
+                </div>
+                <p class="text-gray-500 mb-8 text-sm">Silahkan isi form berikut untuk membuat reservasi ruangan</p>
+
+
+            </div>
 
             <v-form @submit.prevent="handleAddBooking">
                 <v-row>
                     <v-col cols="12">
                         <v-select v-model="selectedRoomId" :items="roomData" item-title="room_name" item-value="id"
-                            label="Pilih Ruangan" variant="outlined" :loading="isLoading"
+                            label="Pilih Ruangan" variant="outlined" :loading="isLoading" hide-details="auto" 
                             placeholder="Cari atau pilih ruangan...">
-                            <template v-slot:item="{ props,  item }">
+                            <template v-slot:item="{ props, item }">
                                 <v-list-item v-bind="props" :title="item.room_name">
                                     <template v-slot:subtitle>
                                         <div class="flex items-center gap-1 mt-1 text-gray-600">
@@ -114,49 +125,55 @@ const handleAddBooking = async () => {
                         </v-select>
                     </v-col>
                 </v-row>
+                <div class="mt-4 mb-1">
+                    <h5>Waktu Mulai</h5>
+                </div>
                 <v-row dense>
                     <v-col cols="12" sm="6">
-                        <v-text-field v-model="startDate" label="Start Date" variant="outlined" readonly
-                            @click="openStartDatePickerDialog" />
+                        <v-text-field v-model="startDate" label="Start Date" variant="outlined" readonly color="black"
+                            prepend-inner-icon="mdi-calendar-month" @click="openStartDatePickerDialog" hide-details="auto" />
                         <DatePicker v-model="showStartDatePickerDialog" @submit-date="(val) => startDate = val" />
                     </v-col>
                     <v-col cols="12" sm="6">
                         <v-text-field v-model="startTime" label="Start Time" variant="outlined" readonly
-                            @click="openStartTimePickerDialog" />
+                           prepend-inner-icon="mdi-clock-time-four-outline"@click="openStartTimePickerDialog" hide-details="auto" />
                         <TimePicker v-model="showStartTimePickerDialog" @submit-time="(val) => startTime = val" />
                     </v-col>
                 </v-row>
 
+                <div class="mt-4 mb-1">
+                    <h5>Waktu Selesai</h5>
+                </div>
                 <v-row dense>
                     <v-col cols="12" sm="6">
                         <v-text-field v-model="endDate" label="End Date" variant="outlined" readonly
-                            @click="openEndDatePickerDialog" />
+                            prepend-inner-icon="mdi-calendar-month" @click="openEndDatePickerDialog"hide-details="auto" />
                         <DatePicker v-model="showEndDatePickerDialog" @submit-date="(val) => endDate = val" />
                     </v-col>
                     <v-col cols="12" sm="6">
                         <v-text-field v-model="endTime" label="End Time" variant="outlined" readonly
-                            @click="openEndTimePickerDialog" />
+                           prepend-inner-icon="mdi-clock-time-four-outline" @click="openEndTimePickerDialog"hide-details="auto"  />
                         <TimePicker v-model="showEndTimePickerDialog" @submit-time="(val) => endTime = val" />
                     </v-col>
                 </v-row>
 
                 <v-row>
                     <v-col cols="12">
-                        <v-textarea v-model="purpose" clearable label="Purpose" variant="outlined"></v-textarea>
+                        <v-textarea v-model="purpose" clearable label="Purpose" variant="outlined" prepend-inner-icon="mdi-card-text-outline"></v-textarea>
                     </v-col>
                 </v-row>
 
                 <v-row>
                     <v-col cols="12">
                         <v-combobox v-model="status" clearable label="Status"
-                            :items="['Pending', 'Approved', 'Rejected']" variant="outlined" class="mb-6"></v-combobox>
+                            :items="['Pending', 'Approved', 'Rejected']" variant="outlined" class="mb-2" prepend-inner-icon="mdi-information-box-outline"></v-combobox>
                     </v-col>
                 </v-row>
 
                 <v-row>
                     <v-col cols="12">
-                        <v-btn type="submit" color="primary" block>
-                            Submit
+                        <v-btn type="submit" color="black" block size="x-large" class="rounded-lg">
+                            Buat Reservasi
                         </v-btn>
                     </v-col>
                 </v-row>

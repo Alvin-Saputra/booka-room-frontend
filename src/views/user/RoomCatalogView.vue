@@ -2,11 +2,11 @@
 import { onMounted } from 'vue';
 import { useRoomStore } from '@/store/roomStore'; // Import store
 import { storeToRefs } from 'pinia'
-import RoomCard from '@/components/common/RoomCard.vue';
+
 import AddRoomDialog from '@/components/admin/AddRoomDialog.vue';
 import Alert from '@/components/common/Alert.vue';
 import { ref, reactive } from 'vue';
-import RoomDetailPanel from '@/components/user/RoomDetailPanel.vue';
+import RoomDetailPanel from '@/components/common/RoomDetailPanel.vue';
 import RoomCardCatalog from '@/components/user/RoomCardCatalog.vue';
 
 
@@ -61,8 +61,6 @@ const openDetailRoomDialog = (room) => {
   selectedRoom.facilities = room.facilities;
   showDetailRoomDialog.value = true;
 };
-
-
 
 
 </script>

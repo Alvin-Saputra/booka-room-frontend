@@ -122,7 +122,7 @@ const triggerAlert = (type, title, msg) => {
           User Management
         </h1>
       </div>
-      <v-btn color="primary" prepend-icon="mdi-plus" rounded flat @click="openAddUserDialog">
+      <v-btn prepend-icon="mdi-plus" rounded flat @click="openAddUserDialog" class="bg-black">
         Add User
       </v-btn>
     </div>

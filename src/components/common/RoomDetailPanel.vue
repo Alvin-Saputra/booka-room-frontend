@@ -33,6 +33,7 @@ const isDrawerOpen = computed({
 
         <div class="p-5" >
           <h2 class="text-2xl font-bold text-gray-800">{{ props.room.roomName }}</h2>
+          <p class="text-gray-500 mt-1">{{ props.room.description }}</p>
           <p class="text-gray-500 mt-1">Kapasitas {{ props.room.capacity }}</p>
 
           <div class="mt-6">

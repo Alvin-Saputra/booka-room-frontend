@@ -36,11 +36,13 @@ export const deleteRoom = async (roomId) => {
     }
 };
 
-export const editRoom = async (roomName, capacity, roomId) => {
+export const editRoom = async (roomName, capacity, description, facilities, roomId) => {
     try {
         const response = await apiClient.put(`/rooms/${roomId}`, {
             roomName: roomName,
             capacity: capacity,
+            description: description,
+            facilities: facilities
         });
         return response.data;
     } catch (err) {

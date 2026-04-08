@@ -34,9 +34,9 @@ const handleConfirm = () => {
 <template>
   
   <v-dialog v-model="isDialogVisible" max-width="400" class="p-16">
-    <v-card class="p-4">
-      <v-card-title class="text-h6">
-        Konfirmasi Hapus
+    <v-card class="p-4 rounded-lg shadow-lg">
+      <v-card-title class="text-h6 font-semibold">
+        Confirmation
       </v-card-title>
 
       <v-card-text>

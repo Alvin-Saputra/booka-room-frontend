@@ -45,7 +45,6 @@ const props = defineProps({
 
 <style scoped>
 .title {
-  /* Menggunakan angka (100-900) atau keyword (bold, normal, bolder) */
   font-weight: 550;
 }
 </style>

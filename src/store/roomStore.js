@@ -94,11 +94,11 @@ export const useRoomStore = defineStore('room', () => {
 
   }
 
-  const updateRoom = async (roomName, capacity, Id) => {
+  const updateRoom = async (roomName, capacity, description, facilities, id) => {
     try {
       isLoading.value = true;
       error.value = null;
-      const response = await editRoom(roomName, capacity, Id);
+      const response = await editRoom(roomName, capacity, description, facilities, id);
 
       if (response.status === 'success') {
         await fetchRooms();

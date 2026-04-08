@@ -2,7 +2,7 @@
 import { ref, reactive } from 'vue';
 import { useAuthStore } from '@/store/authStore';
 import { storeToRefs } from 'pinia'
-import meeting_room_2 from '@/assets/images/meeting_room_2.jpg';
+import meeting_room from '@/assets/images/meeting_room_2.jpg';
 import Alert from '@/components/common/Alert.vue';
 
 const authStore = useAuthStore();
@@ -45,7 +45,7 @@ const handleSubmit = async () => {
 <template>
     <div class="w-full min-h-screen flex items-center justify-center">
 
-        <img :src="meeting_room_2" class="absolute inset-0 w-full h-full object-cover" />
+        <img :src="meeting_room" class="absolute inset-0 w-full h-full object-cover" />
 
         <!-- Blur overlay -->
         <div class="absolute inset-0 backdrop-blur-sm bg-black/20"></div>
