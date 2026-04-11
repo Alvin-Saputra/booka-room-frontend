@@ -138,7 +138,7 @@ const handleEditRoom = async (roomName, capacity, description, facilities) => {
         </h1>
 
         <p class="text-gray-500 mt-1">
-          Lihat riwayat pemesanan ruangan yang telah Anda buat
+          Atur Data Ruangan Anda
         </p>
       </div>
       <v-btn color="black" prepend-icon="mdi-plus" flat v-on:click="openAddRoomDialog" size="large"

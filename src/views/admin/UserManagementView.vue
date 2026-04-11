@@ -19,6 +19,7 @@ onMounted(async () => {
 const showDeleteDialog = ref(false);
 const showAddUserDialog = ref(false);
 const showEditUserDialog = ref(false);
+const search = ref('');
 // const selectedUserId = ref(null);
 const selectedUser = reactive({
   id: null,
@@ -112,19 +113,30 @@ const triggerAlert = (type, title, msg) => {
   alertConfig.show = true;
 };
 
+const headers = [
+  { title: 'User Code', align: 'start', key: 'user_code' },
+  { title: 'User Name', align: 'start', key: 'user_name' },
+  { title: 'Email', align: 'start', key: 'email' },
+  { title: 'Role', align: 'start', key: 'role' },
+  { title: 'Actions', align: 'center', key: 'actions', sortable: false }
+];
+
+
 </script>
 
 <template>
-  <div class="m-24">
+  <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-2">
-        <h1 class="text-3xl font-semibold">
-          User Management
+      <div class="flex-col items-center gap-2">
+        <h1 class="text-3xl font-bold text-gray-800">
+          Manajemen Ruangan
         </h1>
+
+        <p class="text-gray-500 mt-1">
+          Atur Data Pengguna Anda
+        </p>
       </div>
-      <v-btn prepend-icon="mdi-plus" rounded flat @click="openAddUserDialog" class="bg-black">
-        Add User
-      </v-btn>
+
     </div>
 
     <v-skeleton-loader v-if="isLoading" type="table" />
@@ -133,8 +145,9 @@ const triggerAlert = (type, title, msg) => {
       Belum ada data user.
     </v-alert>
 
-    <v-card v-else elevation="2px" rounded="xl" class="p-4">
-      <v-table striped="even">
+    <v-card v-else rounded="xl"
+      class="px-2 py-2 rounded-lg shadow-[0_15px_40px_rgba(0,0,0,0.15)] border hover:border-gray-400">
+      <!-- <v-table striped="even">
         <thead>
           <tr>
             <th class="text-left">
@@ -182,7 +195,28 @@ const triggerAlert = (type, title, msg) => {
             </td>
           </tr>
         </tbody>
-      </v-table>
+      </v-table> -->
+
+      <template v-slot:text>
+        <div class="flex flex-row items-center gap-3"> <v-text-field v-model="search" label="Search"
+            prepend-inner-icon="mdi-magnify" variant="outlined" hide-details single-line rounded="xl"></v-text-field>
+          <v-btn prepend-icon="mdi-plus" flat @click="openAddUserDialog" class="bg-black rounded-lg">
+            Add User
+          </v-btn>
+        </div>
+
+      </template>
+
+      <v-data-table :headers="headers" :items="userData" :search="search">
+
+        <template v-slot:item.actions="{ item }">
+          <div class="flex justify-center gap-2">
+            <v-btn icon="mdi-pencil" size="small" @click="openEditUserDialog(item)" title="Edit User"
+              class="bg-black hover:bg-blue-500"></v-btn>
+            <v-btn icon="mdi-delete" size="small" @click="openDeleteDialog(item)" title="Delete User"
+              class="bg-black hover:bg-red-500"></v-btn>
+          </div>
+        </template></v-data-table>
     </v-card>
   </div>
 

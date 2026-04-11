@@ -115,7 +115,7 @@ const handleLogout = async () => {
       </v-list-item>
 
       <v-list-item to="/admin/room" class="rounded-xl transition py-4" :class="!rail ? 'px-8' : ''"
-       active-class="bg-black text-white transition selected-item">
+        active-class="bg-black text-white transition selected-item">
         <template #prepend>
           <v-icon class="nav-icon text-gray-600 ">mdi-sofa-outline</v-icon>
         </template>
@@ -125,9 +125,8 @@ const handleLogout = async () => {
         </v-list-item-title>
       </v-list-item>
 
-      <v-list-item to="/admin/booking" class="rounded-xl  transition py-4"
-        :class="!rail ? 'px-8' : ''"
-         active-class="bg-black text-white transition selected-item">
+      <v-list-item to="/admin/booking" class="rounded-xl  transition py-4" :class="!rail ? 'px-8' : ''"
+        active-class="bg-black text-white transition selected-item">
         <template #prepend>
           <v-icon class="nav-icon text-gray-600">mdi mdi-book-plus-multiple-outline</v-icon>
         </template>

@@ -4,10 +4,10 @@ import NavigationDrawer from '@/components/common/NavigationDrawer.vue';
 </script>
 
 <template>
-  <v-layout>
+  <v-layout class="h-screen overflow-hidden">
     <NavigationDrawer />
 
-    <v-main class="bg-gray-50 min-h-screen">
+    <v-main class="bg-gray-50 h-screen overflow-y-auto">
       <div class="p-8">
         <router-view />
       </div>
