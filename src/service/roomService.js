@@ -15,11 +15,14 @@ export const getRooms = async () => {
 };
 
 
-export const createRoom = async (roomName, capacity) => {
+export const createRoom = async (roomName, capacity, description, facilities, imageUrl) => {
     try {
         const response = await apiClient.post(`/rooms`, {
             roomName: roomName,
             capacity: capacity,
+            description: description,
+            facilities: facilities,
+            imageUrl: imageUrl
         });
         return response.data;
     } catch (err) {

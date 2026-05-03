@@ -29,8 +29,15 @@ const formatDateTime = (dateString) => {
     if (!dateString) return '-';
     const date = new Date(dateString);
 
-    // Output contoh: 01 Nov 2025, 11:15
-    return date.toLocaleString('id-ID'); // Mengubah format jam 11.15 menjadi 11:15 (opsional)
+
+    return date.toLocaleString('id-ID', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    }).replace('.', ':');
 };
 </script>
 
@@ -47,8 +54,8 @@ const formatDateTime = (dateString) => {
 
         <div class="flex flex-col md:flex-row gap-6 md:gap-12">
             <div class="flex flex-col gap-1">
-                <h2 class="m-0">{{ props.room_name }}</h2>
-                <p class="m-0 text-gray-500 text-sm"> <v-icon>mdi-account</v-icon> {{ item.user_name }}</p>
+                <h2 class="m-0">{{ props.booking.room_name }}</h2>
+                <p class="m-0 text-gray-500 text-sm"> <v-icon>mdi-account</v-icon> {{ props.user_name }}</p>
 
             </div>
 
@@ -57,8 +64,8 @@ const formatDateTime = (dateString) => {
                     <p class="m-0 text-gray-400 text-sm flex items-center">
                         Mulai
                     </p>
-                    <h4 class="m-0 font-medium text-gray-500"> <v-icon class="text-gray-600">mdi-clock-start</v-icon> 
-                    {{ formatDateTime(props.start_time) }}
+                    <h4 class="m-0 font-medium text-gray-500"> <v-icon class="text-gray-600">mdi-clock-start</v-icon>
+                        {{ formatDateTime(props.booking.start_time) }}
                     </h4>
 
                 </div>
@@ -70,7 +77,7 @@ const formatDateTime = (dateString) => {
                         Selesai
                     </p>
                     <h4 class="m-0 font-medium text-gray-500"> <v-icon class="text-gray-600">mdi-clock-end</v-icon>
-                        {{ formatDateTime(props.end_time) }}</h4>
+                        {{ formatDateTime(props.booking.end_time) }}</h4>
 
                 </div>
             </div>
@@ -81,8 +88,8 @@ const formatDateTime = (dateString) => {
         </div>
 
         <div class="flex justify-center flex-1 mt-2 md:mt-0">
-            <v-chip :class="getStatusBgClass(item.status)" variant="tonal" class="font-medium px-4 text-white">
-                {{ item.status }}
+            <v-chip :class="getStatusBgClass(props.booking.status)" variant="tonal" class="font-medium px-4 text-white">
+                {{ props.booking.status }}
             </v-chip>
         </div>
 

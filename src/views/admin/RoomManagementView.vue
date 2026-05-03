@@ -77,8 +77,8 @@ const openDetailRoomDialog = (room) => {
 
 
 
-const handleAddRoom = async (roomName, capacity) => {
-  const isSuccess = await roomStore.addRoom(roomName, capacity);
+const handleAddRoom = async (roomName, capacity, description, facilities) => {
+  const isSuccess = await roomStore.addRoom(roomName, capacity, description, facilities);
   if (isSuccess) {
     triggerAlert('success', 'Success', message);
     showAddRoomDialog.value = false;
