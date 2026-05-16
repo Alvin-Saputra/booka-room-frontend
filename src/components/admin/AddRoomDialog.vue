@@ -29,7 +29,7 @@ const fileInput = ref(null);
 const description = ref(null);
 
 const handleSubmit = () => {
-  props.onCustomClick(roomName.value, capacity.value, description.value, facilities.value);
+  props.onCustomClick(roomName.value, capacity.value, description.value, facilities.value, imageFile.value);
   isDialogVisible.value = false;
 };
 

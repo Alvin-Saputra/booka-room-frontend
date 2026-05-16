@@ -4,18 +4,20 @@ import {
   getRooms,
   deleteRoom,
   editRoom,
+  getRoomsById,
 } from "@/service/roomService";
 import { uploadImageToCloudinary } from "@/service/cloudinaryService";
 import { ref } from "vue";
-import { image } from "@cloudinary/url-gen/qualifiers/source";
+import { trueColor } from "@cloudinary/url-gen/qualifiers/colorSpace";
+
 
 export const useRoomStore = defineStore("room", () => {
   // State (Setara dengan data di options API / ref di setup)
-  const roomData = ref([]);
+  const roomData = ref(null);
+  const roomsData = ref([]);
   const isLoading = ref(false);
   const error = ref(null);
   const message = ref(null);
-  const imageUrl = ref(null);
 
   // Actions (Setara dengan methods)
   const fetchRooms = async () => {
@@ -23,7 +25,7 @@ export const useRoomStore = defineStore("room", () => {
     error.value = null;
     try {
       const response = await getRooms();
-      roomData.value = response.data;
+      roomsData.value = response.data;
 
       if (response.status === "success") {
         message.value = "Data User Room diambil.";
@@ -42,15 +44,57 @@ export const useRoomStore = defineStore("room", () => {
     }
   };
 
+
+  const fetchRoomById = async (roomdId) => {
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+
+      const response = await getRoomsById(roomdId);
+      roomData.value = response.data;
+
+      if (response.status === "success") {
+        message.value = "Data Room Berhasil Diambil.";
+        return true;
+
+      }
+      else {
+        message.value = "Data Room Gagal Diambil.";
+        return false;
+      }
+
+    } catch (err) {
+      error.value = err;
+      message.value = "Terjadi kesalahan pada server.";
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   const addRoom = async (
     roomName,
     capacity,
     description,
     facilities,
+    imageFile,
   ) => {
     isLoading.value = true;
     error.value = null;
+
     try {
+      console.log("Cloud Name yang ditarik:", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
+      let imageUrl = null;
+
+      if (imageFile) {
+        const uploadResult = await uploadImageToCloudinary(imageFile);
+        imageUrl = uploadResult.secure_url;
+      } else if (!imageFile) {
+        message.value = "Gagal menambahkan room. Gambar tidak ditemukan.";
+        return false;
+      }
+
       const response = await createRoom(
         roomName,
         capacity,
@@ -84,8 +128,8 @@ export const useRoomStore = defineStore("room", () => {
       const response = await deleteRoom(roomId);
 
       if (response.status === "success") {
-        if (roomData.value) {
-          roomData.value = roomData.value.filter((room) => room.id !== roomId);
+        if (roomsData.value) {
+          roomsData.value = roomsData.value.filter((room) => room.id !== roomId);
         }
         message.value = "Data Room Berhasil di Hapus";
         isLoading.value = false;
@@ -140,44 +184,17 @@ export const useRoomStore = defineStore("room", () => {
     }
   };
 
-  const uploadImage = async (imageFile) => {
-    if (!imageFile) {
-      imageUrl.value = null;
-      return;
-    }
-
-    const upload = await uploadImageToCloudinary(imageFile);
-
-    try {
-      if (response.status === "success") {
-        imageUrl.value = upload.secure_url;
-        message.value = "Gambar berhasil diunggah.";
-        isLoading.value = false;
-        return true;
-      } else {
-        isLoading.value = false;
-        message.value = "Gambar Gagal Diunggah.";
-        return false;
-      }
-    } catch (err) {
-      error.value = err;
-      message.value = "Gagal Mengunggah gambar.";
-      isLoading.value = false;
-      return false;
-    }
-  };
-
   // Kembalikan state dan action yang ingin diakses dari luar
   return {
+    roomsData,
     roomData,
     isLoading,
     error,
     fetchRooms,
+    fetchRoomById,
     addRoom,
     removeRoom,
     updateRoom,
     message,
-    uploadImage,
-    imageUrl,
   };
 });

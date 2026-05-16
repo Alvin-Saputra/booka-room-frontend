@@ -51,7 +51,7 @@ const emit = defineEmits(['show-detail-panel']);
 
             <div class="flex-shrink-0 w-full md:w-[250px]">
                 <v-img height="200px"
-                    src="https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    :src="props.room.image_url || 'https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'"
                     cover class="rounded-lg"></v-img>
             </div>
 

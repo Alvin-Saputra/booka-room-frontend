@@ -15,7 +15,7 @@ const props = defineProps({
 <template>
   <v-card class="px-2 py-2 rounded-lg shadow-[0_15px_40px_rgba(0,0,0,0.15)] border hover:border-gray-400" max-width="450" elevation="0">
     <v-img height="300px"
-      src="https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      :src="props.room.image_url || 'https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'"
       cover class="rounded-lg"></v-img>
 
     <h2 class="title m-4">

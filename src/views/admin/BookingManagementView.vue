@@ -36,7 +36,6 @@ const triggerAlert = (type, title, msg) => {
 };
 
 const handleDeleteBooking = async () => {
-
   const isSuccess = await bookingStore.removeBooking(selectedId.value);
 
   if (isSuccess) {
@@ -167,15 +166,14 @@ const getStatusBgClass = (status) => {
 
         <template v-slot:item.actions="{ item }">
 
-
-          <div class="flex justify-center gap-2">
+          <div class="flex justify-start gap-2">
             <v-btn icon="mdi-delete" size="small" class="bg-black hover:bg-red-500"
               @click="openConfirmationDialog(item.id, handleDeleteBooking, 'Apakah anda yakin ingin menghapus booking ini?')">
             </v-btn>
-            <v-btn icon="mdi-check" size="small" class="bg-black hover:bg-green-500"
+            <v-btn v-if="item.status == 'Pending'" icon="mdi-check" size="small" class="bg-black hover:bg-green-500"
                @click="openConfirmationDialog(item.id, () => handleBookingApproval('Approved'), 'Apakah anda yakin ingin mengkonfirmasi booking ini?')">
             </v-btn>
-            <v-btn icon="mdi-close" size="small" class="bg-black hover:bg-red-500"
+            <v-btn v-if="item.status == 'Pending'" icon="mdi-close" size="small" class="bg-black hover:bg-red-500"
                @click="openConfirmationDialog(item.id, () => handleBookingApproval('Rejected'), 'Apakah anda yakin ingin menolak booking ini?')">
             </v-btn>
           </div>

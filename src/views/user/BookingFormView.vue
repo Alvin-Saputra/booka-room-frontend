@@ -1,17 +1,18 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
-import { useRoomStore } from '@/store/roomStore';
-import { storeToRefs } from 'pinia';
-import { useRoute } from 'vue-router';
-import DatePicker from '@/components/common/DatePicker.vue';
-import TimePicker from '@/components/common/TimePicker.vue';
-import { useBookingStore } from '@/store/bookingStore';
-import Alert from '@/components/common/Alert.vue';
+import { ref, onMounted, reactive } from "vue";
+import { useRoomStore } from "@/store/roomStore";
+import { storeToRefs } from "pinia";
+import { useRoute, useRouter } from "vue-router";
+import DatePicker from "@/components/common/DatePicker.vue";
+import TimePicker from "@/components/common/TimePicker.vue";
+import { useBookingStore } from "@/store/bookingStore";
+import Alert from "@/components/common/Alert.vue";
 
 const route = useRoute();
+const router = useRouter();
 
 const roomStore = useRoomStore();
-const { roomData, isLoading } = storeToRefs(roomStore);
+const { roomsData, isLoading } = storeToRefs(roomStore);
 
 const bookingStore = useBookingStore();
 const { message } = storeToRefs(bookingStore);
@@ -22,31 +23,32 @@ const endDate = ref(null);
 const startTime = ref(null);
 const endTime = ref(null);
 const purpose = ref(null);
+const formRef = ref(null);
+
+const requiredRule = [(v) => !!v || "Kolom ini wajib diisi"];
 
 onMounted(async () => {
-    await roomStore.fetchRooms();
+  await roomStore.fetchRooms();
 
-    // PERBAIKAN DI SINI: Cek apakah ada roomId di URL
-    if (route.query.roomId) {
-        // Konversi ke Number agar tipe datanya cocok dengan item-value di v-select (jika ID Anda berupa angka di database)
-        selectedRoomId.value = Number(route.query.roomId);
-    }
+  // PERBAIKAN DI SINI: Cek apakah ada roomId di URL
+  if (route.query.roomId) {
+    // Konversi ke Number agar tipe datanya cocok dengan item-value di v-select (jika ID Anda berupa angka di database)
+    selectedRoomId.value = Number(route.query.roomId);
+  }
 });
-
 
 const alertConfig = reactive({
-    show: false,
-    type: 'success',
-    title: 'Success',
-    message: ''
+  show: false,
+  type: "success",
+  title: "Success",
+  message: "",
 });
 
-
 const triggerAlert = (type, title, msg) => {
-    alertConfig.type = type;
-    alertConfig.title = title;
-    alertConfig.message = msg;
-    alertConfig.show = true;
+  alertConfig.type = type;
+  alertConfig.title = title;
+  alertConfig.message = msg;
+  alertConfig.show = true;
 };
 
 const showStartDatePickerDialog = ref(false);
@@ -56,153 +58,220 @@ const showStartTimePickerDialog = ref(false);
 const showEndTimePickerDialog = ref(false);
 
 const openStartDatePickerDialog = () => {
-    showStartDatePickerDialog.value = true;
+  showStartDatePickerDialog.value = true;
 };
 const openEndDatePickerDialog = () => {
-    showEndDatePickerDialog.value = true;
+  showEndDatePickerDialog.value = true;
 };
 
 const openStartTimePickerDialog = () => {
-    showStartTimePickerDialog.value = true;
+  showStartTimePickerDialog.value = true;
 };
 const openEndTimePickerDialog = () => {
-    showEndTimePickerDialog.value = true;
+  showEndTimePickerDialog.value = true;
 };
 
 const handleAddBooking = async () => {
-    const isSuccess = await bookingStore.addBooking(selectedRoomId.value, startDate.value, endDate.value, startTime.value, endTime.value, purpose.value);
+  const { valid } = await formRef.value.validate();
+  
+  if (!valid) return;
 
-    if (isSuccess) {
-        triggerAlert('success', 'Success', message);
-        selectedRoomId.value = null;
-        startDate.value = null;
-        endDate.value = null;
-        startTime.value = null;
-        endTime.value = null;
-        purpose.value = null;
-    }
-    else {
-        triggerAlert('error', 'Error', message);
-        selectedRoomId.value = null;
-        startDate.value = null;
-        endDate.value = null;
-        startTime.value = null;
-        endTime.value = null;
-        purpose.value = null;;
-    }
+  const isSuccess = await bookingStore.addBooking(
+    selectedRoomId.value,
+    startDate.value,
+    endDate.value,
+    startTime.value,
+    endTime.value,
+    purpose.value,
+  );
+
+  if (isSuccess) {
+    triggerAlert("success", "Success", message);
+    selectedRoomId.value = null;
+    startDate.value = null;
+    endDate.value = null;
+    startTime.value = null;
+    endTime.value = null;
+    purpose.value = null;
+  } else {
+    triggerAlert("error", "Error", message);
+    selectedRoomId.value = null;
+    startDate.value = null;
+    endDate.value = null;
+    startTime.value = null;
+    endTime.value = null;
+    purpose.value = null;
+  }
 };
 
-
-
+const goBack = () => {
+  router.back();
+};
 </script>
 
 <template>
-    <div class="min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex">
-         <div class="mb-4">
-
-                <div class="flex justify-start">
-
-                    <v-btn variant="text" prepend-icon="mdi-arrow-left" @click="goBack">
-                        Kembali
-                    </v-btn>
-                </div>
-
-            </div>
-        <div class="max-w-3xl mx-auto flex-1">
-           
-            <v-card class="p-8 w-full shadow-sm" border elevation="0" rounded="xl">
-
-
-                <div class="mb-8 border-b">
-
-                    <div class="flex items-center gap-3 mb-2">
-                        <v-icon icon="mdi-calendar-plus" color="black" size="x-large"></v-icon>
-                        <h1 class="text-xl font-semibold mb-4 ">Form Reservasi Ruangan</h1>
-                    </div>
-                    <p class="text-gray-500 mb-8 text-sm">Silahkan isi form berikut untuk membuat reservasi ruangan</p>
-
-
-                </div>
-
-                <v-form @submit.prevent="handleAddBooking">
-                    <v-row>
-                        <v-col cols="12">
-                            <v-select v-model="selectedRoomId" :items="roomData" item-title="room_name" item-value="id"
-                                label="Pilih Ruangan" variant="outlined" :loading="isLoading"
-                                placeholder="Cari atau pilih ruangan...">
-                                <template v-slot:item="{ props, item }">
-                                    <v-list-item v-bind="props" :title="item.room_name">
-                                        <template v-slot:subtitle>
-                                            <div class="flex items-center gap-1 mt-1 text-gray-600">
-                                                <v-icon size="small" icon="mdi-account-group"></v-icon>
-                                                <span>Kapasitas: {{ item.capacity }} Orang</span>
-                                            </div>
-                                        </template>
-                                    </v-list-item>
-                                </template>
-                            </v-select>
-                        </v-col>
-                    </v-row>
-
-
-                    <div class="my-4">
-                        <h5>Waktu Mulai</h5>
-                    </div>
-
-                    <v-row dense>
-
-                        <v-col cols="12" sm="6">
-                            <v-text-field v-model="startDate" label="Tanggal Mulai" variant="outlined" readonly
-                                color="black" prepend-inner-icon="mdi-calendar-month"
-                                @click="openStartDatePickerDialog" />
-                            <DatePicker v-model="showStartDatePickerDialog" @submit-date="(val) => startDate = val" />
-                        </v-col>
-                        <v-col cols="12" sm="6">
-                            <v-text-field v-model="startTime" label="Start Time" variant="outlined" readonly
-                                prepend-inner-icon="mdi-clock-time-four-outline" @click="openStartTimePickerDialog" />
-                            <TimePicker v-model="showStartTimePickerDialog" @submit-time="(val) => startTime = val" />
-                        </v-col>
-                    </v-row>
-
-
-                    <div class="my-4">
-                        <h5>Waktu Selesai</h5>
-                    </div>
-                    <v-row dense>
-                        <v-col cols="12" sm="6">
-                            <v-text-field v-model="endDate" label="End Date" variant="outlined" readonly
-                                prepend-inner-icon="mdi-calendar" @click="openEndDatePickerDialog" />
-                            <DatePicker v-model="showEndDatePickerDialog" @submit-date="(val) => endDate = val" />
-                        </v-col>
-                        <v-col cols="12" sm="6">
-                            <v-text-field v-model="endTime" label="End Time" variant="outlined" readonly
-                                prepend-inner-icon="mdi-clock-time-four-outline" @click="openEndTimePickerDialog" />
-                            <TimePicker v-model="showEndTimePickerDialog" @submit-time="(val) => endTime = val" />
-                        </v-col>
-                    </v-row>
-
-                    <v-row>
-                        <v-col cols="12">
-                            <v-textarea v-model="purpose" clearable label="Purpose" variant="outlined"
-                                prepend-inner-icon="mdi-card-text-outline"></v-textarea>
-                        </v-col>
-                    </v-row>
-
-                    <v-row>
-                        <v-col cols="12">
-                            <v-btn type="submit" color="black" size="x-large" block
-                                class="rounded-lg hover:bg-gray-600">
-                                Ajukan Reservasi
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-                </v-form>
-            </v-card>
-            <Alert v-model="alertConfig.show" :type="alertConfig.type" :title="alertConfig.title"
-                :message="alertConfig.message" />
-        </div>
+  <div class="min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex">
+    <div class="mb-4">
+      <div class="flex justify-start">
+        <v-btn variant="text" prepend-icon="mdi-arrow-left" @click="goBack">
+          Kembali
+        </v-btn>
+      </div>
     </div>
-</template>
+    <div class="max-w-3xl mx-auto flex-1">
+      <v-card class="p-8 w-full shadow-sm" border elevation="0" rounded="xl">
+        <div class="mb-8 border-b">
+          <div class="flex items-center gap-3 mb-2">
+            <v-icon
+              icon="mdi-calendar-plus"
+              color="black"
+              size="x-large"
+            ></v-icon>
+            <h1 class="text-xl font-semibold mb-4">Form Reservasi Ruangan</h1>
+          </div>
+          <p class="text-gray-500 mb-8 text-sm">
+            Silahkan isi form berikut untuk membuat reservasi ruangan
+          </p>
+        </div>
 
+        <v-form ref="formRef" @submit.prevent="handleAddBooking">
+          <v-row>
+            <v-col cols="12">
+              <v-select
+                v-model="selectedRoomId"
+                :items="roomsData"
+                item-title="room_name"
+                item-value="id"
+                label="Pilih Ruangan"
+                variant="outlined"
+                :loading="isLoading"
+                placeholder="Cari atau pilih ruangan..."
+                :rules="requiredRule"
+              >
+                <template v-slot:item="{ props, item }">
+                  <v-list-item v-bind="props" :title="item.room_name">
+                    <template v-slot:subtitle>
+                      <div class="flex items-center gap-1 mt-1 text-gray-600">
+                        <v-icon size="small" icon="mdi-account-group"></v-icon>
+                        <span>Kapasitas: {{ item.capacity }} Orang</span>
+                      </div>
+                    </template>
+                  </v-list-item>
+                </template>
+              </v-select>
+            </v-col>
+          </v-row>
+
+          <div class="my-4">
+            <h5>Waktu Mulai</h5>
+          </div>
+
+          <v-row dense>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="startDate"
+                label="Tanggal Mulai"
+                variant="outlined"
+                readonly
+                color="black"
+                prepend-inner-icon="mdi-calendar-month"
+                @click="openStartDatePickerDialog"
+                :rules="requiredRule"
+              />
+              <DatePicker
+                v-model="showStartDatePickerDialog"
+                @submit-date="(val) => (startDate = val)"
+              />
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="startTime"
+                label="Start Time"
+                variant="outlined"
+                readonly
+                prepend-inner-icon="mdi-clock-time-four-outline"
+                @click="openStartTimePickerDialog"
+                :rules="requiredRule"
+              />
+              <TimePicker
+                v-model="showStartTimePickerDialog"
+                @submit-time="(val) => (startTime = val)"
+              />
+            </v-col>
+          </v-row>
+
+          <div class="my-4">
+            <h5>Waktu Selesai</h5>
+          </div>
+          <v-row dense>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="endDate"
+                label="End Date"
+                variant="outlined"
+                readonly
+                prepend-inner-icon="mdi-calendar"
+                @click="openEndDatePickerDialog"
+                :rules="requiredRule"
+              />
+              <DatePicker
+                v-model="showEndDatePickerDialog"
+                @submit-date="(val) => (endDate = val)"
+              />
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="endTime"
+                label="End Time"
+                variant="outlined"
+                readonly
+                prepend-inner-icon="mdi-clock-time-four-outline"
+                @click="openEndTimePickerDialog"
+                :rules="requiredRule"
+              />
+              <TimePicker
+                v-model="showEndTimePickerDialog"
+                @submit-time="(val) => (endTime = val)"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="12">
+              <v-textarea
+                v-model="purpose"
+                clearable
+                label="Purpose"
+                variant="outlined"
+                prepend-inner-icon="mdi-card-text-outline"
+                :rules="requiredRule"
+              ></v-textarea>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="12">
+              <v-btn
+                type="submit"
+                color="black"
+                size="x-large"
+                block
+                class="rounded-lg hover:bg-gray-600"
+              >
+                Ajukan Reservasi
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-form>
+      </v-card>
+      <Alert
+        v-model="alertConfig.show"
+        :type="alertConfig.type"
+        :title="alertConfig.title"
+        :message="alertConfig.message"
+      />
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped></style>

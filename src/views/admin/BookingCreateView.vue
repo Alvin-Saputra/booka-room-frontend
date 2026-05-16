@@ -6,9 +6,12 @@ import DatePicker from '@/components/common/DatePicker.vue';
 import TimePicker from '@/components/common/TimePicker.vue';
 import { useBookingStore } from '@/store/bookingStore';
 import Alert from '@/components/common/Alert.vue';
+import { useRoute, useRouter } from 'vue-router';
 
+const route = useRoute();
+const router = useRouter();
 const roomStore = useRoomStore();
-const { roomData, isLoading } = storeToRefs(roomStore);
+const { roomsData, isLoading, roomData } = storeToRefs(roomStore);
 
 const bookingStore = useBookingStore();
 const { message } = storeToRefs(bookingStore);
@@ -23,6 +26,14 @@ const status = ref(null);
 
 onMounted(() => {
     roomStore.fetchRooms();
+    // roomStore.fetchRoomById();
+
+      if (route.query.roomId) {
+        // Konversi ke Number agar tipe datanya cocok dengan item-value di v-select (jika ID Anda berupa angka di database)
+        selectedRoomId.value = Number(route.query.roomId);
+        console.log("Selected Room ID from URL:", selectedRoomId.value);
+    }
+
 });
 
 
@@ -86,13 +97,25 @@ const handleAddBooking = async () => {
     }
 };
 
+const goBack = () => {
+    router.back();
+};
 
 
 </script>
 
 <template>
     <div class="min-h-screen">
+         <div class="mb-4">
 
+                <div class="flex justify-start">
+
+                    <v-btn variant="text" prepend-icon="mdi-arrow-left" @click="goBack">
+                        Kembali
+                    </v-btn>
+                </div>
+
+            </div>
 
         <v-card class="p-6 w-full max-w-3xl mx-auto rounded-lg border border-gray-300" elevation="0">
             <div class="mb-8 border-b">
@@ -109,7 +132,7 @@ const handleAddBooking = async () => {
             <v-form @submit.prevent="handleAddBooking">
                 <v-row>
                     <v-col cols="12">
-                        <v-select v-model="selectedRoomId" :items="roomData" item-title="room_name" item-value="id"
+                        <v-select v-model="selectedRoomId" :items="roomsData" item-title="room_name" item-value="id"
                             label="Pilih Ruangan" variant="outlined" :loading="isLoading" hide-details="auto" 
                             placeholder="Cari atau pilih ruangan...">
                             <template v-slot:item="{ props, item }">

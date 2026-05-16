@@ -9,10 +9,11 @@ import Alert from '@/components/common/Alert.vue';
 import { ref, reactive } from 'vue';
 import EditRoomDialog from '@/components/admin/EditRoomDialog.vue';
 import RoomDetailPanel from '@/components/common/RoomDetailPanel.vue';
+import { image } from '@cloudinary/url-gen/qualifiers/source';
 
 const roomStore = useRoomStore();
 
-const { roomData, isLoading, message } = storeToRefs(roomStore);
+const { roomsData, isLoading, message } = storeToRefs(roomStore);
 
 onMounted(async () => {
   // Panggil action dari store
@@ -29,6 +30,7 @@ const selectedRoom = reactive({
   roomName: '',
   capacity: '',
   description: '',
+  imageUrl:'',
   facilities: []
 });
 
@@ -72,13 +74,14 @@ const openDetailRoomDialog = (room) => {
   selectedRoom.capacity = room.capacity;
   selectedRoom.description = room.description;
   selectedRoom.facilities = room.facilities;
+  selectedRoom.imageUrl = room.image_url;
   showDetailRoomDialog.value = true;
 };
 
 
 
-const handleAddRoom = async (roomName, capacity, description, facilities) => {
-  const isSuccess = await roomStore.addRoom(roomName, capacity, description, facilities);
+const handleAddRoom = async (roomName, capacity, description, facilities, imageFile) => {
+  const isSuccess = await roomStore.addRoom(roomName, capacity, description, facilities, imageFile);
   if (isSuccess) {
     triggerAlert('success', 'Success', message);
     showAddRoomDialog.value = false;
@@ -149,12 +152,12 @@ const handleEditRoom = async (roomName, capacity, description, facilities) => {
 
     <v-skeleton-loader v-if="isLoading" type="card, card, card" />
 
-    <v-alert v-else-if="!roomData || roomData.length === 0" type="info" variant="tonal">
+    <v-alert v-else-if="!roomsData || roomsData.length === 0" type="info" variant="tonal">
       Belum ada data room.
     </v-alert>
 
     <v-row v-else>
-      <v-col v-for="item in roomData" :key="item.id" cols="12">
+      <v-col v-for="item in roomsData" :key="item.id" cols="12">
         <RoomCard :room="item" ">
           <template #actions>
 

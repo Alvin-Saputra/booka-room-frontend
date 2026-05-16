@@ -60,6 +60,7 @@ const router = createRouter({
           path: 'add-booking', // [PERBAIKAN] Hilangkan '/' agar tetap berada di bawah /admin
           name: 'admin-add-booking',
           component: BookingCreateView,
+          meta: { hideLayout: true }
         },
       ]
     },
@@ -81,6 +82,7 @@ const router = createRouter({
           path: 'booking-room',
           name: 'user-booking-room', // [PERBAIKAN] Nama diubah menjadi unik
           component: BookingFormView,
+           meta: { hideLayout: true }
         },
         {
           path: 'booking-history',
@@ -98,7 +100,6 @@ router.beforeEach((to, from, next) => {
   const isAuth = authStore.isAuthenticated;
   const userRole = authStore.user?.role; // Ambil role dari state Pinia
 
-  // 1. Jika belum login tapi mau ke halaman yang butuh login
 
 
   if (to.meta.requiresAuth && !isAuth) {
@@ -110,9 +111,7 @@ router.beforeEach((to, from, next) => {
     else if (userRole === 'user') next({ name: 'user-room' });
     else next();
   }
-  // 3. Jika sudah login, cek apakah role-nya sesuai dengan meta route
   else if (to.meta.requiresAuth && to.meta.role && to.meta.role !== userRole) {
-    // Jika role tidak cocok, tendang kembali ke halaman masing-masing
     if (userRole === 'admin') next({ name: 'admin-dashboard' });
     else if (userRole === 'user') next({ name: 'user-room' });
     else next({ name: 'login' });

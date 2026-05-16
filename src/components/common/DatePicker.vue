@@ -21,8 +21,16 @@ const isDialogVisible = computed({
 
 
 const handleSubmit = () => {
-  emit('submit-date', value.value);
+  emit('submit-date', formatDate(value.value));
   isDialogVisible.value = false; // Menutup dialog
+};
+
+const formatDate = (date) => {
+  const d = new Date(date);
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${year}-${month}-${day}`;
 };
 
 </script>

@@ -12,7 +12,7 @@ import RoomCardCatalog from '@/components/user/RoomCardCatalog.vue';
 
 const roomStore = useRoomStore();
 
-const { roomData, isLoading, message } = storeToRefs(roomStore);
+const { roomsData, isLoading, message } = storeToRefs(roomStore);
 
 onMounted(async () => {
   // Panggil action dari store
@@ -86,12 +86,12 @@ const openDetailRoomDialog = (room) => {
       <v-skeleton-loader type="card, card, card" />
     </div>
 
-    <v-alert v-else-if="!roomData || roomData.length === 0" type="info" variant="tonal" class="my-12">
+    <v-alert v-else-if="!roomsData || roomsData.length === 0" type="info" variant="tonal" class="my-12">
       Belum ada data ruangan yang tersedia.
     </v-alert>
 
     <v-row v-else dense>
-      <v-col v-for="item in roomData" :key="item.id" cols="12" sm="6" md="4" class="px-1 py-1">
+      <v-col v-for="item in roomsData" :key="item.id" cols="12" sm="6" md="4" class="px-1 py-1">
 
         <RoomCardCatalog :room="item">
           <template #actions>
