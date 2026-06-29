@@ -9,6 +9,7 @@ import {
 import { uploadImageToCloudinary } from "@/service/cloudinaryService";
 import { ref } from "vue";
 import { trueColor } from "@cloudinary/url-gen/qualifiers/colorSpace";
+import { image } from "@cloudinary/url-gen/qualifiers/source";
 
 
 export const useRoomStore = defineStore("room", () => {
@@ -84,23 +85,14 @@ export const useRoomStore = defineStore("room", () => {
     error.value = null;
 
     try {
-      console.log("Cloud Name yang ditarik:", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-      let imageUrl = null;
-
-      if (imageFile) {
-        const uploadResult = await uploadImageToCloudinary(imageFile);
-        imageUrl = uploadResult.secure_url;
-      } else if (!imageFile) {
-        message.value = "Gagal menambahkan room. Gambar tidak ditemukan.";
-        return false;
-      }
+    
 
       const response = await createRoom(
         roomName,
         capacity,
         description,
         facilities,
-        imageUrl,
+        imageFile,
       );
       if (response.status === "success") {
         console.log("ini adalah" + response.status);
@@ -153,6 +145,7 @@ export const useRoomStore = defineStore("room", () => {
     capacity,
     description,
     facilities,
+    imageFile,
     id,
   ) => {
     try {
@@ -163,6 +156,7 @@ export const useRoomStore = defineStore("room", () => {
         capacity,
         description,
         facilities,
+        imageFile,
         id,
       );
 

@@ -65,6 +65,7 @@ const openEditRoomDialog = (room) => {
   selectedRoom.capacity = room.capacity;
   selectedRoom.facilities = room.facilities || [];
   selectedRoom.description = room.description || '';
+  selectedRoom.imageUrl = room.image_url || '';
   showEditRoomDialog.value = true
 }
 
@@ -107,8 +108,8 @@ const handleDeleteRoom = async () => {
   }
 };
 
-const handleEditRoom = async (roomName, capacity, description, facilities) => {
-  const isSuccess = await roomStore.updateRoom(roomName, capacity, description, facilities, selectedRoom.id);
+const handleEditRoom = async (roomName, capacity, description, facilities, imageFile) => {
+  const isSuccess = await roomStore.updateRoom(roomName, capacity, description, facilities, imageFile ,selectedRoom.id);
   if (isSuccess) {
     triggerAlert('success', 'Success', message);
     showEditRoomDialog.value = false;
@@ -117,6 +118,7 @@ const handleEditRoom = async (roomName, capacity, description, facilities) => {
     selectedRoom.capacity = '';
     selectedRoom.description = '';
     selectedRoom.facilities = [];
+    selectedRoom.imageUrl = '';
   }
   else {
     triggerAlert('error', 'Error', message);

@@ -18,21 +18,29 @@ export const getRoomsById = async (roomId) => {
   }
 };
 
+
 export const createRoom = async (
   roomName,
   capacity,
   description,
   facilities,
-  imageUrl,
+  image
 ) => {
   try {
-    const response = await apiClient.post(`/rooms`, {
-      roomName: roomName,
-      capacity: capacity,
-      description: description,
-      facilities: facilities,
-      imageUrl: imageUrl,
+    const formData = new FormData();
+
+    formData.append("roomName", roomName);
+    formData.append("capacity", capacity);
+    formData.append("description", description);
+    formData.append("facilities", facilities);
+    formData.append("image", image);
+
+    const response = await apiClient.post("/rooms", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
+
     return response.data;
   } catch (err) {
     throw err;
@@ -53,15 +61,26 @@ export const editRoom = async (
   capacity,
   description,
   facilities,
+  image,
   roomId,
 ) => {
   try {
-    const response = await apiClient.put(`/rooms/${roomId}`, {
-      roomName: roomName,
-      capacity: capacity,
-      description: description,
-      facilities: facilities,
+
+    const formData = new FormData();
+
+    formData.append("roomName", roomName);
+    formData.append("capacity", capacity);
+    formData.append("description", description);
+    formData.append("facilities", facilities);
+    formData.append("image", image);
+
+    const response = await apiClient.put(`/rooms/${roomId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
+
+
     return response.data;
   } catch (err) {
     throw err;
