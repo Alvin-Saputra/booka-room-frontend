@@ -4,6 +4,14 @@ import { deleteUser } from '@/service/userService';
 import { createUser } from '@/service/userService';
 import { ref } from 'vue';
 
+
+const errorMessages = {
+  'ERR_NOT_FOUND': 'The room you are looking for no longer exists or has been deleted.',
+  'ERR_MISSING_FIELDS': 'Please fill in all required fields before saving.',
+  'ERR_DATABASE': 'Our server is currently experiencing an issue. Please try again later.',
+  'ERR_CREATE_FAILED': 'Failed to save the new room to the system.'
+};
+
 export const useUserStore = defineStore('user', () => {
   // State (Setara dengan data di options API / ref di setup)
   const userData = ref([]);
@@ -20,16 +28,12 @@ export const useUserStore = defineStore('user', () => {
       userData.value = response.data;
 
       if (response.status === 'success') {
-        message.value = "Data User Berhasil diambil.";
+        message.value = response.message;
         return true;
-      } else {
-        message.value = "Data User Gagal diambil.";
-        return false;
       }
     } catch (err) {
-      console.error('Error fetching users:', err);
-      error.value = err;
-      message.value = "Terjadi kesalahan pada server.";
+      const code = err.response?.data?.errorCode
+      error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
       return false;
     } finally {
       isLoading.value = false;
@@ -39,31 +43,27 @@ export const useUserStore = defineStore('user', () => {
 
   const removeUser = async (userId) => {
     try {
-      isLoading.value= true;
+      isLoading.value = true;
       error.value = null;
       const response = await deleteUser(userId);
 
       if (response.status === 'success') {
 
-       if (userData.value) {
-        userData.value = userData.value.filter(user => user.id !== userId);
-      }
-        message.value = "Data User Berhasil di Hapus";
-        isLoading.value = false;
+        if (userData.value) {
+          userData.value = userData.value.filter(user => user.id !== userId);
+        }
+        message.value = response.message;
         return true;
 
       }
-      else {
-        message.value = "Data User Gagal di Hapus";
-        isLoading.value = false;
-        return false;
-      }
 
     } catch (err) {
-      console.error('Error deleting user:', err);
-      error.value = err;
-      message.value = "Gagal Mengahapus Data User";
+      const code = err.response?.data?.errorCode
+      error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
       return false;
+    }
+    finally {
+      isLoading.value = false;
     }
 
   }
@@ -76,23 +76,16 @@ export const useUserStore = defineStore('user', () => {
       const response = await createUser(userName, email, role.toLowerCase());
 
       if (response.status === 'success') {
-        console.log("ini adalah" + response.status)
-        await fetchUsers();
-        message.value = 'Data User Berhasil di Tambahkan';
+        message.value = response.message;
         return true;
-      }
-      else {
-        message.value = 'Data User Gagal di Tambahkan';
-        return false;
       }
 
     } catch (err) {
-      console.error('Error adding user:', err);
-      error.value = err;
+      const code = err.response?.data?.errorCode
+      error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
       return false;
     } finally {
       isLoading.value = false;
-      // return false;
     }
   }
 
@@ -104,19 +97,12 @@ export const useUserStore = defineStore('user', () => {
       const response = await updateUser(userId, userName, email, role);
 
       if (response.status === 'success') {
-        await fetchUsers();
-        message.value = "Berhasil Mengubah Data User";
-        isLoading.value = true;
+        message.value = response.message;
         return true;
       }
-      else {
-        message.value = "Gagal Mengubah Data User";
-        isLoading.value = false;
-        return false;
-      }
     } catch (err) {
-      console.error('Error adding user:', err);
-      error.value = err;
+      const code = err.response?.data?.errorCode
+      error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
       return false;
     }
     finally {

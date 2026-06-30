@@ -4,6 +4,11 @@ import { computed } from "vue";
 import { loginUser } from "@/service/authService";
 import router from "@/router";
 
+const errorMessages = {
+  'ERR_INVALID_CREDENTIALS': 'Wrong email or password',
+  'ERR_DATABASE': 'Our server is currently experiencing an issue. Please try again later.',
+};
+
 export const useAuthStore = defineStore("auth", () => {
     const user = ref(JSON.parse(localStorage.getItem('user')) || null);
     const token = ref(localStorage.getItem('token') || null);
@@ -39,17 +44,13 @@ export const useAuthStore = defineStore("auth", () => {
                 } else {
                     router.push('/'); // Fallback jika role tidak dikenali
                 }
-                message.value = "Berhasil Login"
+                message.value = response.message;
                 return true;
 
-            } else {
-
-
-            }
+            } 
         } catch (err) {
-            console.error('Error saat login:', err);
-            error.value = err.response?.data?.message || 'Gagal login';
-            message.value = "Gagal Login";
+            const code = err.response?.data?.errorCode
+            error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
             return false;
         }
         finally {

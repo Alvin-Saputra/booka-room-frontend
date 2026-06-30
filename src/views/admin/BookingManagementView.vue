@@ -7,7 +7,7 @@ import Alert from '@/components/common/Alert.vue';
 import ConfirmationDialog from '@/components/common/ConfirmationDialog.vue';
 
 const bookingStore = useBookingStore();
-const { bookingData, isLoading, message } = storeToRefs(bookingStore);
+const { bookingData, isLoading, message, error } = storeToRefs(bookingStore);
 
 const showConfirmationDialog = ref(false);
 const selectedId = ref(null);
@@ -42,7 +42,7 @@ const handleDeleteBooking = async () => {
     triggerAlert('success', 'Success', message);
   }
   else {
-    triggerAlert('error', 'Error', message);
+    triggerAlert('error', 'Error', error);
 
   }
   selectedId.value = null;
@@ -53,9 +53,10 @@ const handleBookingApproval = async (status) => {
 
   if (isSuccess) {
     triggerAlert('success', 'Success', message);
+    await bookingStore.fetchBookings();
   }
   else {
-    triggerAlert('error', 'Error', message);
+    triggerAlert('error', 'Error', error);
 
   }
   selectedId.value = null;

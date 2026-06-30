@@ -84,6 +84,8 @@ const handleAddBooking = async () => {
         endTime.value = null;
         purpose.value = null;
         status.value = null;
+
+        await bookingStore.fetchBookings();
     }
     else {
         triggerAlert('error', 'Error', message);

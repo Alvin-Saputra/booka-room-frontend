@@ -8,6 +8,15 @@ import { bookingApproval } from "@/service/bookingService";
 import { getBookingsStatistic } from "@/service/bookingService";
 
 
+const errorMessages = {
+    'ERR_NOT_FOUND': 'The room you are looking for no longer exists or has been deleted.',
+    'ERR_ROOM_ALREADY_BOOKED': 'The room is already booked',
+    'ERR_MISSING_FIELDS': 'Please fill in all required fields before saving.',
+    'ERR_DATABASE': 'Our server is currently experiencing an issue. Please try again later.',
+    'ERR_CREATE_FAILED': 'Failed to save the new room to the system.'
+};
+
+
 export const useBookingStore = defineStore("booking", () => {
     const bookingData = ref([]);
     const bookingDataStatistic = ref(null);
@@ -30,23 +39,16 @@ export const useBookingStore = defineStore("booking", () => {
             const response = await createBooking(userId, roomId, startDateTime, endDateTime, purpose, status);
 
             if (response.status === 'success') {
-                console.log("ini adalah" + response.status)
-                // fetchRooms();
-                message.value = 'Booking Room Berhasil di Buat';
+                message.value = response.message;
                 return true;
-            }
-            else {
-                message.value = 'Booking Gagal Dibuat';
-                return false;
             }
 
         } catch (err) {
-            console.error('Error adding room:', err);
-            error.value = err;
+            const code = err.response?.data?.errorCode
+            error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
             return false;
         } finally {
             isLoading.value = false;
-            // return false;
         }
     };
 
@@ -59,17 +61,13 @@ export const useBookingStore = defineStore("booking", () => {
             bookingDataStatistic.value = response.data;
 
             if (response.status === 'success') {
-                message.value = "Data Booking Berhasil diambil.";
+                message.value = response.message;
                 return true;
-            } else {
-                message.value = "Data Booking Gagal diambil.";
-                return false;
             }
 
         } catch (err) {
-            console.error('Error fetching booking data:', err);
-            error.value = err;
-            message.value = "Terjadi kesalahan pada server.";
+            const code = err.response?.data?.errorCode
+            error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
             return false;
         }
         finally {
@@ -84,21 +82,13 @@ export const useBookingStore = defineStore("booking", () => {
             const response = await deleteBooking(bookingId);
 
             if (response.status == 'success') {
-                message.value = "Data Booking Berhasil dihapus.";
+                message.value = response.message;
                 bookingData.value = bookingData.value.filter(item => item.id !== bookingId);
-                isLoading.value = false;
                 return true;
             }
-            else {
-                message.value = "Data Booking Gagal Dihapus";
-                isLoading.value = false;
-                return false;
-            }
         } catch (err) {
-            console.log('Error remove booking data:', err);
-            error.value = err;
-            message.value = "Terjadi kesalahan pada server.";
-            isLoading.value = false;
+            const code = err.response?.data?.errorCode
+            error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
             return false;
         }
         finally {
@@ -114,25 +104,18 @@ export const useBookingStore = defineStore("booking", () => {
             const response = await bookingApproval(bookingId, status);
 
             if (response.status == "success") {
-                message.value = "Booking Berhasil di " + status;
-                isLoading.value = false;
-                fetchBookings();
+                message.value = response.message;
                 return true;
-            }
-            else {
-                message.value = "Booking Gagal di " + status;
-                isLoading.value = false;
-                return false;
             }
 
         } catch (err) {
-            console.log('Error approval booking data:', err);
-            error.value = err;
-            message.value = "Terjadi kesalahan pada server.";
-            isLoading.value = false;
+            const code = err.response?.data?.errorCode
+            error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
             return false;
         }
-
+        finally {
+            isLoading.value = false;
+        }
     };
 
     const fetchBookingsByUserId = async (userId) => {
@@ -146,17 +129,13 @@ export const useBookingStore = defineStore("booking", () => {
             bookingData.value = response.data;
 
             if (response.status === 'success') {
-                message.value = "Data Booking Berhasil diambil.";
+                message.value = response.message;
                 return true;
-            } else {
-                message.value = "Data Booking Gagal diambil.";
-                return false;
             }
 
         } catch (err) {
-            console.error('Error fetching booking data:', err);
-            error.value = err;
-            message.value = "Terjadi kesalahan pada server.";
+            const code = err.response?.data?.errorCode
+            error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
             return false;
         }
         finally {
@@ -164,7 +143,7 @@ export const useBookingStore = defineStore("booking", () => {
         }
     };
 
-     const fetchBookings = async () => {
+    const fetchBookings = async () => {
         isLoading.value = true;
         error.value = null;
 
@@ -173,17 +152,13 @@ export const useBookingStore = defineStore("booking", () => {
             bookingData.value = response.data;
 
             if (response.status === 'success') {
-                message.value = "Data Booking Berhasil diambil.";
+                message.value = response.message;
                 return true;
-            } else {
-                message.value = "Data Booking Gagal diambil.";
-                return false;
             }
 
         } catch (err) {
-            console.error('Error fetching booking data:', err);
-            error.value = err;
-            message.value = "Terjadi kesalahan pada server.";
+            const code = err.response?.data?.errorCode
+            error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
             return false;
         }
         finally {

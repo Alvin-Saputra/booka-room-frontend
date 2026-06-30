@@ -10,7 +10,7 @@ import Alert from '@/components/common/Alert.vue';
 
 
 const userStore = useUserStore();
-const { userData, isLoading, message } = storeToRefs(userStore);
+const { userData, isLoading, message, error } = storeToRefs(userStore);
 
 onMounted(async () => {
   await userStore.fetchUsers();
@@ -58,9 +58,10 @@ const handleAddUser = async (name, email, role) => {
   if (isSuccess) {
     triggerAlert('success', 'Success', message);
     showAddUserDialog.value = false;
+    await userStore.fetchUsers();
   }
   else {
-    triggerAlert('error', 'Error', message);
+    triggerAlert('error', 'Error', error);
     showAddUserDialog.value = false;
   }
 
@@ -78,7 +79,7 @@ const handleDeleteUser = async () => {
     selectedUser.id = null;
   }
   else {
-    triggerAlert('error', 'Error', message);
+    triggerAlert('error', 'Error', error);
     showDeleteDialog.value = false;
     selectedUser.id = null;
   }
@@ -95,9 +96,11 @@ const handleEditUser = async (name, email, role) => {
     selectedUser.name = '';
     selectedUser.email = '';
     selectedUser.role = '';
+
+    await userStore.fetchUsers();
   }
   else {
-    triggerAlert('error', 'Error', message);
+    triggerAlert('error', 'Error', error);
     showEditUserDialog.value = false;
     selectedUser.id = null;
     selectedUser.name = '';

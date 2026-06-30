@@ -6,11 +6,15 @@ import {
   editRoom,
   getRoomsById,
 } from "@/service/roomService";
-import { uploadImageToCloudinary } from "@/service/cloudinaryService";
 import { ref } from "vue";
-import { trueColor } from "@cloudinary/url-gen/qualifiers/colorSpace";
-import { image } from "@cloudinary/url-gen/qualifiers/source";
 
+const errorMessages = {
+  'ERR_ROOM_NOT_FOUND': 'The room you are looking for no longer exists or has been deleted.',
+  'ERR_MISSING_FIELDS': 'Please fill in all required fields before saving.',
+  'ERR_INVALID_INPUT': 'Capacity must be a number greater than 0.',
+  'ERR_DATABASE': 'Our server is currently experiencing an issue. Please try again later.',
+  'ERR_CREATE_FAILED': 'Failed to save the new room to the system.'
+};
 
 export const useRoomStore = defineStore("room", () => {
   // State (Setara dengan data di options API / ref di setup)
@@ -27,18 +31,11 @@ export const useRoomStore = defineStore("room", () => {
     try {
       const response = await getRooms();
       roomsData.value = response.data;
+      return true;
 
-      if (response.status === "success") {
-        message.value = "Data User Room diambil.";
-        return true;
-      } else {
-        message.value = "Data User Room diambil.";
-        return false;
-      }
     } catch (err) {
-      console.error("Error fetching users:", err);
-      error.value = err;
-      message.value = "Terjadi kesalahan pada server.";
+      const code = err.response?.data?.errorCode
+      error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
       return false;
     } finally {
       isLoading.value = false;
@@ -51,23 +48,14 @@ export const useRoomStore = defineStore("room", () => {
     error.value = null;
 
     try {
-
       const response = await getRoomsById(roomdId);
       roomData.value = response.data;
-
-      if (response.status === "success") {
-        message.value = "Data Room Berhasil Diambil.";
-        return true;
-
-      }
-      else {
-        message.value = "Data Room Gagal Diambil.";
-        return false;
-      }
+      message.value = response.message;
+      return true;
 
     } catch (err) {
-      error.value = err;
-      message.value = "Terjadi kesalahan pada server.";
+      const code = err.response?.data?.errorCode
+      error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
       return false;
     } finally {
       isLoading.value = false;
@@ -85,8 +73,6 @@ export const useRoomStore = defineStore("room", () => {
     error.value = null;
 
     try {
-    
-
       const response = await createRoom(
         roomName,
         capacity,
@@ -95,21 +81,15 @@ export const useRoomStore = defineStore("room", () => {
         imageFile,
       );
       if (response.status === "success") {
-        console.log("ini adalah" + response.status);
-        fetchRooms();
-        message.value = "Data Room Berhasil di Tambahkan";
+        message.value = response.message;
         return true;
-      } else {
-        message.value = "Data Room Gagal di Tambahkan";
-        return false;
       }
     } catch (err) {
-      console.error("Error adding room:", err);
-      error.value = err;
+      const code = err.response?.data?.errorCode
+      error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
       return false;
     } finally {
       isLoading.value = false;
-      // return false;
     }
   };
 
@@ -123,20 +103,16 @@ export const useRoomStore = defineStore("room", () => {
         if (roomsData.value) {
           roomsData.value = roomsData.value.filter((room) => room.id !== roomId);
         }
-        message.value = "Data Room Berhasil di Hapus";
-        isLoading.value = false;
+        message.value = response.message;
         return true;
-      } else {
-        message.value = "Data Room Gagal di Hapus";
-        isLoading.value = false;
-        return false;
       }
     } catch (err) {
-      console.error("Error deleting room:", err);
-      error.value = err;
-      isLoading.value = false;
-      message.value = "Gagal Mengahapus Data room";
+      const code = err.response?.data?.errorCode
+      error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
       return false;
+    }
+    finally{
+      isLoading.value = false;
     }
   };
 
@@ -161,20 +137,16 @@ export const useRoomStore = defineStore("room", () => {
       );
 
       if (response.status === "success") {
-        await fetchRooms();
-        message.value = "Data Room Berhasil diubah.";
-        isLoading.value = false;
+        message.value = response.message;
         return true;
-      } else {
-        isLoading.value = false;
-        message.value = "Data Room Gagal diubah.";
-        return false;
-      }
+      } 
     } catch (err) {
-      error.value = err;
-      message.value = "Gagal Mengubah data room";
-      isLoading.value = false;
+      const code = err.response?.data?.errorCode
+      error.value = errorMessages[code] || error.response?.data?.message || 'Unexpected Error';
       return false;
+    }
+    finally{
+      isLoading.value = false;
     }
   };
 

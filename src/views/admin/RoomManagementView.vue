@@ -13,7 +13,7 @@ import { image } from '@cloudinary/url-gen/qualifiers/source';
 
 const roomStore = useRoomStore();
 
-const { roomsData, isLoading, message } = storeToRefs(roomStore);
+const { roomsData, isLoading, message, error } = storeToRefs(roomStore);
 
 onMounted(async () => {
   // Panggil action dari store
@@ -86,9 +86,10 @@ const handleAddRoom = async (roomName, capacity, description, facilities, imageF
   if (isSuccess) {
     triggerAlert('success', 'Success', message);
     showAddRoomDialog.value = false;
+    await roomStore.fetchRooms();
   }
   else {
-    triggerAlert('error', 'Error', message);
+    triggerAlert('error', 'Error', error);
     showAddRoomDialog.value = false;
   }
 
@@ -102,7 +103,7 @@ const handleDeleteRoom = async () => {
     selectedRoom.id = null;
   }
   else {
-    triggerAlert('error', 'Error', message);
+    triggerAlert('error', 'Error', error);
     showDeleteDialog.value = false;
     selectedRoom.id = null;
   }
@@ -119,9 +120,10 @@ const handleEditRoom = async (roomName, capacity, description, facilities, image
     selectedRoom.description = '';
     selectedRoom.facilities = [];
     selectedRoom.imageUrl = '';
+    await roomStore.fetchRooms();
   }
   else {
-    triggerAlert('error', 'Error', message);
+    triggerAlert('error', 'Error', error);
     showEditRoomDialog.value = false;
     selectedRoom.id = null;
     selectedRoom.roomName = '';

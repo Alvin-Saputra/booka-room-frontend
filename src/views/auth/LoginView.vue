@@ -7,7 +7,7 @@ import Alert from '@/components/common/Alert.vue';
 
 const authStore = useAuthStore();
 
-const { isLoading, message } = storeToRefs(authStore);
+const { isLoading, message, error } = storeToRefs(authStore);
 
 
 const email = ref(null);
@@ -36,7 +36,7 @@ const handleSubmit = async () => {
 
     }
     else {
-        triggerAlert('error', 'Error', message.value);
+        triggerAlert('error', 'Error', error.value);
 
     }
 };
